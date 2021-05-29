@@ -108,8 +108,8 @@ class DiscourseEncoder(nn.Module):
         self.ws3 = nn.Linear((config['hidden_dim']*2), (config['hidden_dim']*2))
         self.ws4 = nn.Linear((config['hidden_dim']*2), 1)
         self.softmax = nn.Softmax(dim=1)
-        self.discourse_encoder = nn.LSTM(config['hidden_dim']*2, config['hidden_dim'], config['num_layers'],
-                              batch_first=True, bidirectional=config['bidirectional'])
+        self.discourse_encoder = nn.LSTM(config['hidden_dim']*2, config['hidden_dim']*2, config['num_layers'],
+                              batch_first=True, bidirectional=False)
 
     def init_weights(self):
         for name, param in self.discourse_encoder.state_dict().items():
