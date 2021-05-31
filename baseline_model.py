@@ -114,8 +114,9 @@ class DiscourseEncoder(nn.Module):
 
     def forward(self, sent_encoding, hidden_ctxt=None):
         inner_pred = self.drop(sent_encoding)
-        inner_pred, hidden_op = self.discourse_encoder.forward(inner_pred[None, :, :])
-        return inner_pred
+        inner_pred, hidden_op = self.discourse_encoder.forward(inner_pred)
+        # print(inner_pred.size(), inner_pred[:,-1,:].size())
+        return inner_pred[:, -1, :]  # Last hidden state
 
 
 class Classifier(nn.Module):
@@ -137,10 +138,11 @@ class Classifier(nn.Module):
         nn.init.xavier_uniform(self.pred.state_dict()['weight'])
         self.pred.bias.data.fill_(0)
 
-
-    def forward(self, sentence, length, hidden_ctxt=None):
+    def forward(self, sentence, length, history_len=5, hidden_ctxt=None):
         outp_ctxt, ctxt_mask = get_word_embeddings(sentence)
         sent_encoding = self.sentence_encoder.forward(outp_ctxt, ctxt_mask, length, hidden_ctxt)
+        # modify size
+        sent_encoding = sent_encoding.view(-1,history_len,sent_encoding.size(-1))
         sent_encoding = self.discourse_encoder.forward(sent_encoding)
-        pre_pred = F.tanh(self.pre_pred(self.drop(sent_encoding.squeeze(0))))
+        pre_pred = F.tanh(self.pre_pred(self.drop(sent_encoding)))
         return self.pred(self.drop(pre_pred))
