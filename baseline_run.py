@@ -44,20 +44,23 @@ def get_data(fpath):
 
 def get_context(dialog, history_len):
     all_sent, all_ls = [], []
-    sent, ls, out = [['<sos>'] for _ in range(history_len)], [1]*history_len, []
+    sent, out = [['<sos>'] for _ in range(history_len)], []
+    speakers = ['<None>']*history_len
     for index, utterance in enumerate(dialog):
         out.append(out_map[utterance.tag3])
+        speakers.pop(0)
         sent.pop(0)
-        ls.pop(0)
+        speakers.append(utterance.speaker_id)
+        # TODO: Can use deque to improve time complexity if required
         if len(utterance.text) < 200:
-            # TODO: Can use deque to improve time complexity if required
             sent.append(utterance.text)
-            ls.append(len(utterance.text))
         else:
             sent.append(utterance.text[:200])
-            ls.append(200)
-        all_sent.append(deepcopy(sent))
-        all_ls.append(deepcopy(ls))
+
+        cur_speaker = utterance.speaker_id
+        all_sent.append([['<same>' if cur_speaker == spk else '<different>'] + deepcopy(x) for spk,x in zip(speakers, sent)])
+        all_ls.append([len(elem) for elem in all_sent[-1]])
+
     assert len(all_ls) == len(out) == len(all_sent)
     return all_sent, all_ls, out
 
@@ -66,7 +69,7 @@ def flatten_list(l):
     return [item for sample in l for item in sample]
 
 
-def train(epoch, data, history_len, batch_size=50):
+def train(epoch, data, history_len, batch_size=100):
     random.shuffle(data)
     start_time = time.time()
     classifier_loss = 0
@@ -97,18 +100,18 @@ def train(epoch, data, history_len, batch_size=50):
     print("--Training--\nEpoch: ", epoch, "Discourse Act Classification Loss: ", classifier_loss,
           "Time Elapsed: ", time.time()-start_time)
 
-    perf = evaluate(validate_data, history_len)
+    perf = evaluate(validate_data, history_len, False, batch_size)
     if prev_best_macro < perf:
         prev_best_macro = perf
         print ("-------------------Test start-----------------------")
-        _ = evaluate(test_data, history_len, True)
+        _ = evaluate(test_data, history_len, True, batch_size)
         print ("-------------------Test end-----------------------")
         print ("Started saving model")
-        torch.save(model.state_dict(), '../model/baseline_model_5.pt')
+        torch.save(model.state_dict(), '../model/baseline_model_speaker.pt')
         print("Completed saving model")
 
 
-def evaluate(data, history_len, is_test=False, batch_size=50):
+def evaluate(data, history_len, is_test=False, batch_size=100):
     y_true, y_pred = [], []
     model.eval()
 
@@ -125,7 +128,8 @@ def evaluate(data, history_len, is_test=False, batch_size=50):
 
             with torch.no_grad():
                 output = model.forward(sent_flat, ls_flat, history_len)
-            output = output.squeeze()
+            # print(output.size())
+            # output = output.squeeze()
             _, predict = torch.max(output, 1)
             y_pred += list(predict.cpu().numpy() if has_cuda else predict.numpy())
 
@@ -141,10 +145,11 @@ def evaluate(data, history_len, is_test=False, batch_size=50):
 if __name__ == '__main__':
 
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--drop', help='DROP', default=6, type=float)
-    parser.add_argument('--learn_rate', help='LEARNING RATE', default=0, type=float)
+    parser.add_argument('--drop', help='DROP', default=0.4, type=float)
+    parser.add_argument('--learn_rate', help='LEARNING RATE', default=5e-4, type=float)
     parser.add_argument('--seed', help='SEED', default=0, type=int)
-    parser.add_argument('--history', help='# Historical utterances to consider', default=5, type=int)
+    parser.add_argument('--history', help='# Historical utterances to consider', default=7, type=int)
+    parser.add_argument('--batch_size', help='Batch Size', default=25, type=int)
 
     args = parser.parse_args()
     has_cuda = torch.cuda.is_available()
@@ -152,6 +157,7 @@ if __name__ == '__main__':
     learn_rate = args.learn_rate
     seed = args.seed
     history_len = args.history
+    batch_size = args.batch_size
 
     print ("[HYPERPARAMS] dropout: ", drop, "learning rate: ", learn_rate, "seed: ", seed)
     np.random.seed(seed)
@@ -185,11 +191,11 @@ if __name__ == '__main__':
 
     params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = optim.Adam(params, lr=learn_rate, betas=[0.9, 0.999], eps=1e-8, weight_decay=0)
-
+    # evaluate(validate_data, history_len, True)
     try:
         for epoch in range(15):
             print("---------------------------Started Training Epoch = {0}--------------------------".format(epoch+1))
-            train(epoch, train_data, history_len)
+            train(epoch, train_data, history_len, batch_size)
 
     except KeyboardInterrupt:
         print ("----------------- INTERRUPTED -----------------")

@@ -138,7 +138,7 @@ class Classifier(nn.Module):
         nn.init.xavier_uniform(self.pred.state_dict()['weight'])
         self.pred.bias.data.fill_(0)
 
-    def forward(self, sentence, length, history_len=5, hidden_ctxt=None):
+    def forward(self, sentence, length, history_len=10, hidden_ctxt=None):
         outp_ctxt, ctxt_mask = get_word_embeddings(sentence)
         sent_encoding = self.sentence_encoder.forward(outp_ctxt, ctxt_mask, length, hidden_ctxt)
         # modify size
