@@ -12,6 +12,9 @@
 `python run_test.py`
 
 ### Usage
+
+`from inference import Predictor`
+
 - Create predictor object
 
 `prd = Predictor(model_path='../model/baseline_model_speaker.pt', history_len=7)`
