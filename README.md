@@ -13,6 +13,8 @@
 
 ### Usage
 
+- Required Files: **inference.py** and **baseline_model.py**
+
 `from inference import Predictor`
 
 - Create predictor object
