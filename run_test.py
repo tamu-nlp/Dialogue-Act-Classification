@@ -1,4 +1,6 @@
 from inference import Predictor
+import warnings
+warnings.filterwarnings('ignore')
 
 examples = """s1:that will allow your microphone to
 s2:send data to the test vet.

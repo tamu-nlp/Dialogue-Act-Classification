@@ -1,5 +1,9 @@
 import torch
 from baseline_model import Classifier
+if torch.cuda.is_available():     
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
 
 
 labels_map = {elem.split('_')[0]:elem.split('_')[1] for elem in "s_Statement,b_Backchannel,fh_Floor Holder,bk_Acknowledgement,aa_Accept,df_Defending/Explanation," \
@@ -32,7 +36,7 @@ class Predictor:
         if self.has_cuda:
             self.model = self.model.cuda()
         self.model.init_weights()
-        self.model.load_state_dict(torch.load(model_path))
+        self.model.load_state_dict(torch.load(model_path, map_location=device))
         self.model.eval()
 
         self.history_len = history_len
