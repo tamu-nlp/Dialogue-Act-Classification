@@ -11,7 +11,7 @@ s1:I am I am not.
 s3:You know what? I don't have working headphones right now. Is it coming through? All right.
 s1:Give me just a second. Let me see if I can find some.""".split('\n')
 
-prd = Predictor(model_path='../model/baseline_model_speaker.pt', history_len=7)
+prd = Predictor(model_path='data/baseline_model_speaker.pt', history_len=7)
 for i, ex in enumerate(examples):
     if i == 5: prd.reset_model()
     print(ex)

@@ -1,40 +1,85 @@
-# DA_code
-
-## Installing required packages
-
-`pip install -r requirements.txt`
-
-### Download pre-trained model 
-
-[Shared Drive Link](https://drive.google.com/drive/folders/11Y2Km1y1yDIIfyYaFVeF5cpTNBahUsGr?usp=sharing)
-
-### Helper File (for reference)
-`python run_test.py`
-
-### Usage
-
-- Required Files: **inference.py** and **baseline_model.py**
-
-`from inference import Predictor`
-
-- Create predictor object
-
-`prd = Predictor(model_path='../model/baseline_model_speaker.pt', history_len=7)`
-
-- call predict() method
-
-`prd.predict(sentence)`
-
-- sentence should be formatted as **SpeakerID:Utterance**
-
-`Example-> Alex:send data to the test vet.`
-
-- For a new dialog, reset the model by calling reset_model()
-
-`prd.reset_model()`
+TAMU Dialogue Act Classifier
+============================
 
 
-## Performance of Classifier on MRDA
+Installation
+------------
+
+If you want to use the classifier as a Dockerized web service, skip to the
+'With Docker' section below. Otherwise, read on.
+
+You can install the dependencies and download the pretrained model by running
+
+    ./scripts/install
+
+Usage
+-----
+
+### Web service
+
+#### Without Docker
+
+You can run the dialogue act classifier as a web service by running the
+following script:
+
+    ./scripts/run_dac_server
+
+The app will run on `http://localhost:8000` by default. To see the
+automatically generated API documentation, visit `http://localhost:8000/docs`.
+
+#### With Docker
+
+To run the classifier as a Dockerized service, run the following invocation:
+
+    docker-compose up --build
+
+This will run the service on localhost:8000 by default. You can change the port
+by changing the port mapping in the `docker-compose.yml` file.
+
+#### Testing web service
+
+The script, `scripts/test_dac_server` demonstrates an example HTTP GET request
+to the `/classify` endpoint (the only one that is currently implemented) to get
+a dialogue act classification.
+
+### Python API
+
+The files `inference.py` and `baseline_model.py` need to be in the same
+directory (we have not yet set it up as a package, e.g., with a `setup.py`).
+
+````
+# Import the required class
+from inference import Predictor
+
+# Create predictor object
+prd = Predictor(model_path=<path_to_pretrained_pytorch_model>, history_len=7)
+
+# Get prediction using the 'predict' method. The input string should be
+formatted as "<speaker_id>:<utterance>"
+sentence="Participant 21:Five because at least I know there was one yellow
+victim that died so"
+
+classification = prd.predict("<speaker_id>:<utterance>")
+print(classification)
+# This should print out a classification label, e.g. "Statement"
+
+# For a new dialog, reset the model by calling reset_model()
+prd.reset_model()
+````
+
+### Test script
+
+The `run_test.py` script demonstrates how to use the Python API. You run it by
+simply invoking the following:
+
+    python run_test.py
+
+
+Performance of the classifier on the MRDA corpus
+------------------------------------------------
+
+The table below shows the performance of the classifier on the 
+[MRDA Corpus](https://aclanthology.org/W04-2319.pdf)
 
 ```
 Epoch:  14 Discourse Act Classification Loss:  3469.8051283061504 Time Elapsed:  776.1403894424438
