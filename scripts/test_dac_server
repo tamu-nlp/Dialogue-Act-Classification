@@ -8,6 +8,10 @@ set -euo pipefail
 # mirrors that of the git repository.
 export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 
+# Test model resetting
+curl localhost:8000/reset-model &> /dev/null
+
+# Test utterance classification
 curl \
     -X GET localhost:8000/classify \
     -H "Content-Type: application/json" \
