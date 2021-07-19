@@ -35,8 +35,13 @@ app = FastAPI(title="TAMU Dialogue Act Classifier", version="0.0.1")
 
 @app.get("/reset-model")
 def reset_model():
-    # The model should reset before and after each mission.
-    PREDICTOR.reset_model()
+    # The model should reset before each mission.
+    try:
+        PREDICTOR.reset_model()
+        return "Model successfully reset."
+    except:
+        return "Unable to reset model."
+
 
 @app.get("/classify", response_model=str)
 def classify_utterance(message: DialogAgentMessage):
