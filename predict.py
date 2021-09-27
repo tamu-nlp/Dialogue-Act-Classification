@@ -158,7 +158,7 @@ if __name__ == '__main__':
                  "co_Command,qy_Yes-No-question,nd_Dispreferred Answers,j_Joke,bd_Downplayer," \
                  "cc_Commitment,ng_Negative Answers,am_Maybe,qrr_Or Clause After Y/N Question,fe_Exclamation,m_Mimic,fa_Apology," \
                  "t_About-task,br_Repetition Request,aap_Partial Accept,qh_Rhetorical-Question,tc_Topic Change," \
-                 "r_Repeat,t1_self-talk,t3_3rd-party-talk,bh_Rhetorical Question Backchannel,bsc_Partial Reject," \
+                 "r_Repeat,t1_Self-talk,t3_3rd-party-talk,bh_Rhetorical Question Backchannel,bsc_Partial Reject," \
                  "arp_Self-Correct Misspeaking,bs_Summary,f_Follow Me,qr_Or-Question,ft_Thanks," \
                  "g_Tag-Question,qo_Open-ended Question,bc_Correct-misspeaking,by_Sympathy,fw_Welcome".split(',')}
     print(labels_map)
