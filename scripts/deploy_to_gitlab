@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# This script builds the DialogActClassifier image and deploys it to the Aptima Gitlab
+# instance.
+
+VERSION="1.0.0"
+GITLAB_URL=gitlab.asist.aptima.com:5050
+DOCKER_IMAGE="${GITLAB_URL}/asist/testbed/tamu_dialog_act_classifier:${VERSION}"
+
+docker login "$GITLAB_URL"
+
+echo "Building ${DOCKER_IMAGE}"
+docker build -t "$DOCKER_IMAGE" .
+docker push "$DOCKER_IMAGE"
