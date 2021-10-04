@@ -1,3 +1,4 @@
+from pathlib import Path
 import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
@@ -13,13 +14,15 @@ if CUDA:
     print("GPU being used")
 else:
     print("No gpu found")
+
 #options_file = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json"
 #weight_file = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
 
-options_file = "../data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-weight_file = "../data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+options_file = Path(__file__).parent.resolve() / "data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
+weight_file = Path(__file__).parent.resolve() / "data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
 
 elmo = Elmo(options_file, weight_file, 1, dropout=0.0, requires_grad=False)
+
 if CUDA:
     elmo = elmo.cuda()
 
