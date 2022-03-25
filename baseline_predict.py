@@ -85,7 +85,7 @@ if __name__ == '__main__':
                  "co_Action-directive,qy_Yes-No-question,nd_Dispreferred Answers,j_Humorous Material,bd_Downplayer," \
                  "cc_Commit,ng_Negative Non-no Answers,am_Maybe,qrr_Or-Clause,fe_Exclamation,m_Mimic Offer,fa_Apology," \
                  "t_About-task,br_Signal-non-understanding,aap_Accept-part,qh_Rhetorical-Question,tc_Topic Change," \
-                 "r_Repeat,t1_self-talk,t3_3rd-party-talk,bh_Rhetorical-question Continue,bsc_Reject-part," \
+                 "r_Repeat,t1_Self-talk,t3_3rd-party-talk,bh_Rhetorical-question Continue,bsc_Reject-part," \
                  "arp_Misspeak Self-Correction,bs_Reformulate/Summarize,f_Follow Me,qr_Or-Question,ft_Thanking," \
                  "g_Tag-Question,qo_Open-Question,bc_Correct-misspeaking,by_Sympathy,fw_Welcome".split(',')}
     print(labels_map)
