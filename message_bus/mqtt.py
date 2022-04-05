@@ -1,5 +1,7 @@
 import paho.mqtt.client as mqtt
 
+# https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
+
 # 
 class Mqtt():
   # The callback for when the client receives a CONNACK response from the server.
