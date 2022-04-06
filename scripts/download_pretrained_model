@@ -9,10 +9,10 @@ set -euo pipefail
 export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 
 
-MODEL_URL=http://vanga.sista.arizona.edu/tomcat/data/baseline_model_speaker.pt
+MODEL_URL=http://vanga.sista.arizona.edu/tomcat/data/sequential_baseline.pt
 
 pushd ${ROOT}/data > /dev/null
-    curl -O $MODEL_URL
+    curl -O -L $MODEL_URL
 popd > /dev/null
 
 echo "Pretrained model downloaded from ${MODEL_URL}"

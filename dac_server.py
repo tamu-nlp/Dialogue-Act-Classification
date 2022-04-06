@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from inference import Predictor
 
 # Get model path
-MODEL_PATH = os.path.dirname(__file__) + "/data/baseline_model_speaker.pt"
+MODEL_PATH = os.path.dirname(__file__) + "/data/sequential_baseline.pt"
 
 # Create predictor object
 PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
