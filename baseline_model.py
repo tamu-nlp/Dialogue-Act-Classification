@@ -1,106 +1,70 @@
 import torch
 import torch.nn as nn
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+# from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import numpy as np
 import torch.nn.functional as F
-from torch.autograd import Variable
-from torch.distributions import Categorical
-from allennlp.modules.elmo import Elmo, batch_to_ids
+from transformers import RobertaTokenizer, RobertaModel
+import transformers
+transformers.logging.set_verbosity_error()
 
-
-CUDA = torch.cuda.is_available()
-if CUDA:
-    print("GPU being used")
+import warnings
+warnings.filterwarnings('ignore')
+if torch.cuda.is_available():  
+    print("Using GPU")   
+    device = torch.device("cuda:0")
 else:
-    print("No gpu found")
-#options_file = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-#weight_file = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+    print("No GPU found")
+    device = torch.device("cpu")
 
-#options_file = "../data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-#weight_file = "../data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+roberta = RobertaModel.from_pretrained("roberta-base")
+roberta = roberta.to(device)
+tokenizer = RobertaTokenizer.from_pretrained("roberta-base", padding = True, max_length = 400)
 
-options_file = "data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-weight_file = "data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+#either sum last 4 hidden layers or use last hidden state
+def get_word_embeddings(sentence_batch, sum_hidden_states = False):
+    #sum_hidden_states: if true, sums the token representations of last 4 hidden states. otherwise uses final hidden state only
+    #sentence_batch: gets a list of strings, where each string is an utterance
+    # with torch.no_grad():
+    batch_encoded = tokenizer(sentence_batch, padding=True, truncation=True, return_tensors="pt").to(device)
+    #contains input_ids and attention_mask
+    attention_mask = batch_encoded.attention_mask
+    out = roberta(**batch_encoded, output_hidden_states = sum_hidden_states)
+    
+    if sum_hidden_states == False: return out.last_hidden_state, attention_mask
+                                    
 
-elmo = Elmo(options_file, weight_file, 1, dropout=0.0, requires_grad=False)
-if CUDA:
-    elmo = elmo.cuda()
-
-
-def get_word_embeddings(sentence):
-    character_ids = batch_to_ids(sentence)
-    if CUDA:
-        character_ids = character_ids.cuda()
-    embedding = elmo(character_ids)
-    outp_ctxt = embedding['elmo_representations'][0]
-    ctxt_mask = embedding['mask']
-    return outp_ctxt, ctxt_mask
-
-
-class BiLSTM(nn.Module):
-
-    def __init__(self, config, is_pos=False):
-        super(BiLSTM, self).__init__()
-        self.bidirectional = config['bidirectional']
-        self.num_layers = config['num_layers']
-        self.hidden_dim = config['hidden_dim']
-        self.embedding_dim = config['embedding_dim']
-
-        self.bilstm = nn.LSTM(self.embedding_dim, self.hidden_dim, config['num_layers'],
-                              batch_first=True, bidirectional=config['bidirectional']) #, dropout=config['dropout']
-
-    def init_weights(self):
-        for name, param in self.bilstm.state_dict().items():
-            if 'weight' in name: nn.init.xavier_normal(param)
-
-    def forward(self, emb, len_inp, hidden=None):
-        len_inp = len_inp.cpu().numpy() if CUDA else len_inp.numpy()
-        len_inp, idx_sort = np.sort(len_inp)[::-1], np.argsort(-len_inp)
-        len_inp = len_inp.copy()
-        idx_unsort = np.argsort(idx_sort)
-
-        idx_sort = torch.from_numpy(idx_sort).cuda() if CUDA else torch.from_numpy(idx_sort)
-        emb = emb.index_select(0, Variable(idx_sort))
-
-        emb_packed = pack_padded_sequence(emb, len_inp, batch_first=True)
-        outp, _ = self.bilstm(emb_packed, hidden)
-        outp = pad_packed_sequence(outp, batch_first=True)[0]
-
-        idx_unsort = torch.from_numpy(idx_unsort).cuda() if CUDA else torch.from_numpy(idx_unsort)
-        outp = outp.index_select(0, Variable(idx_unsort))
-        return outp
-
-    def init_hidden(self, batch_size):
-        weight = next(self.parameters()).data
-        num_directions = 2 if self.bidirectional else 1
-        return (Variable(weight.new(self.num_layers*num_directions, batch_size, self.hidden_dim).zero_()),
-                Variable(weight.new(self.num_layers*num_directions, batch_size, self.hidden_dim).zero_()))
+    #sum last 4 hidden states
+    embeddings = torch.stack(out.hidden_states, dim=0) #stack all layer outputs
+    embeddings = embeddings.permute(1,2,0,3) #batch, tokens, layers, dim
+    emb = embeddings[:,:,-4:,:].sum(dim = 2) #(batch, max tokens, dim)
+    return emb, attention_mask
+    #attention_mask: (batch size, max token)
 
 
 #  Returns LSTM based sentence encodin, dim=1024, elements of vector in range [-1,1]
 class SentenceEncoder(nn.Module):
-
     def __init__(self, config):
         super(SentenceEncoder, self).__init__()
-        self.context_encoder = BiLSTM(config)
-        self.inner_pred = nn.Linear((config['hidden_dim']*2), config['hidden_dim']*2) # Prafulla 3
+        self.context_encoder = nn.LSTM(config['embedding_dim'], config['hidden_dim'], config['num_layers'],
+                              batch_first=True, bidirectional=config['bidirectional']) #, dropout=config['dropout']
+        self.inner_pred = nn.Linear((config['hidden_dim']*2), config['hidden_dim']*2)
         self.ws1 = nn.Linear((config['hidden_dim']*2), (config['hidden_dim']*2))
         self.ws2 = nn.Linear((config['hidden_dim']*2), 1)
         self.softmax = nn.Softmax(dim=1)
         self.drop = nn.Dropout(config['dropout'])
 
     def init_weights(self):
+        for name, param in self.context_encoder.state_dict().items():
+            if 'weight' in name: nn.init.xavier_normal(param)
         nn.init.xavier_uniform(self.ws1.state_dict()['weight'])
         self.ws1.bias.data.fill_(0)
         nn.init.xavier_uniform(self.ws2.state_dict()['weight'])
         self.ws2.bias.data.fill_(0)
         nn.init.xavier_uniform(self.inner_pred.state_dict()['weight'])
         self.inner_pred.bias.data.fill_(0)
-        self.context_encoder.init_weights()
 
     def forward(self, outp_ctxt, ctxt_mask, length, hidden_ctxt=None):
-        outp = self.context_encoder.forward(outp_ctxt, length, hidden_ctxt)
-
+        outp, _ = self.context_encoder.forward(outp_ctxt, hidden_ctxt)
         self_attention = F.tanh(self.ws1(self.drop(outp)))
         self_attention = self.ws2(self.drop(self_attention)).squeeze()
         self_attention = self_attention + -10000*(ctxt_mask == 0).float()
@@ -125,8 +89,7 @@ class DiscourseEncoder(nn.Module):
     def forward(self, sent_encoding, hidden_ctxt=None):
         inner_pred = self.drop(sent_encoding)
         inner_pred, hidden_op = self.discourse_encoder.forward(inner_pred)
-        # print(inner_pred.size(), inner_pred[:,-1,:].size())
-        return inner_pred[:, -1, :]  # Last hidden state
+        return inner_pred.squeeze()  # Last hidden state
 
 
 class Classifier(nn.Module):
@@ -138,6 +101,7 @@ class Classifier(nn.Module):
         self.pre_pred = nn.Linear((config['hidden_dim']*2), config['hidden_dim']*2)
         self.pred = nn.Linear((config['hidden_dim']*2), config['out_dim'])
         self.drop = nn.Dropout(config['dropout'])
+        self.sum_emb_representation = config["sum_emb_rep"]
         self.init_weights()
 
     def init_weights(self):
@@ -148,11 +112,11 @@ class Classifier(nn.Module):
         nn.init.xavier_uniform(self.pred.state_dict()['weight'])
         self.pred.bias.data.fill_(0)
 
-    def forward(self, sentence, length, history_len=10, hidden_ctxt=None):
-        outp_ctxt, ctxt_mask = get_word_embeddings(sentence)
-        sent_encoding = self.sentence_encoder.forward(outp_ctxt, ctxt_mask, length, hidden_ctxt)
-        # modify size
-        sent_encoding = sent_encoding.view(-1,history_len,sent_encoding.size(-1))
+    def forward(self, sentence, hidden_ctxt=None):
+        outp_emb, attention_mask = get_word_embeddings(sentence, self.sum_emb_representation)
+        sent_encoding = self.sentence_encoder.forward(outp_emb, attention_mask, hidden_ctxt)
+        sent_encoding = sent_encoding.view(1,-1,sent_encoding.size(-1)) #(1, batchsize, 1024)
         sent_encoding = self.discourse_encoder.forward(sent_encoding)
         pre_pred = F.tanh(self.pre_pred(self.drop(sent_encoding)))
-        return self.pred(self.drop(pre_pred))
+        pred = self.pred(self.drop(pre_pred))
+        return pred

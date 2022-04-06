@@ -1,5 +1,5 @@
 torch
-allennlp
+transformers
 numpy
 fastapi
 uvicorn

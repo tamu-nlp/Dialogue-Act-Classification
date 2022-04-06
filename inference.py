@@ -1,5 +1,6 @@
 import torch
 from baseline_model import Classifier
+from copy import deepcopy
 if torch.cuda.is_available():     
     device = torch.device("cuda")
 else:
@@ -31,42 +32,33 @@ class Predictor:
         self.has_cuda = torch.cuda.is_available()
         self.out_map = {out_tags[key]:labels_map[key] for key in out_tags}
 
-        self.model = Classifier({'num_layers': 1, 'hidden_dim': 512, 'bidirectional': True, 'embedding_dim': 1024,
-                            'dropout': 0.1, 'out_dim': len(self.out_map)})
-        if self.has_cuda:
-            self.model = self.model.cuda()
+        self.model = Classifier({'num_layers': 1, 'hidden_dim': 512, 'bidirectional': True, 'embedding_dim': 768,
+                            'dropout': 0.1, 'out_dim': len(self.out_map), "sum_emb_rep": False})
+        self.model = self.model.to(device)
         self.model.init_weights()
         self.model.load_state_dict(torch.load(model_path, map_location=device))
         self.model.eval()
 
         self.history_len = history_len
-        self.sent = [['<sos>'] for _ in range(self.history_len)]
-        self.speaker = ['<None>'] * self.history_len
+        self.sent = ['<sos>' for _ in range(self.history_len)]
+        self.last_speaker = '<None>'
 
     def predict(self, sentence):
-        spk, snt = sentence.strip().split(':')
+        curr_spk, snt = sentence.strip().split(':')
 
-        self.speaker.pop(0)
-        self.speaker.append(spk)
+        spk = '<same> ' if curr_spk == self.last_speaker else '<switch> '
+
         self.sent.pop(0)
-        self.sent.append(snt.split())
-
-        context = [['<same>' if past_spk == spk else '<different>'] + x[:min(len(x),200)]
-                   for past_spk,x in zip(self.speaker, self.sent)]
-        ls = [len(elem) for elem in context]
-
-        ls = torch.LongTensor(ls)
-        if self.has_cuda:
-            ls = ls.cuda()
+        self.sent.append(spk + deepcopy(snt[:200]))
+        self.last_speaker = curr_spk
 
         with torch.no_grad():
-            output = self.model.forward(context, ls, self.history_len)
+            output = self.model.forward(self.sent)
 
-        # output = output.squeeze()
-        output = torch.nn.functional.softmax(output, dim=1)
+        output = torch.nn.functional.softmax(output, dim=1) 
         score, predict = torch.max(output, 1)
-        return self.out_map[predict.item()]
+        return self.out_map[predict[-1].item()] #we are only interested in the label for last utterance, others only serve as context
 
     def reset_model(self):
-        self.sent = [['<sos>'] for _ in range(self.history_len)]
-        self.speaker = ['<None>'] * self.history_len
+        self.sent = ['<sos>' for _ in range(self.history_len)]
+        self.last_speaker = '<None>'
