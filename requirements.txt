@@ -1,5 +1,3 @@
 torch
 transformers
 numpy
-fastapi
-uvicorn
