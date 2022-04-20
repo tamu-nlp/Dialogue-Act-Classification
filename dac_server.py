@@ -1,18 +1,24 @@
 import os
 from typing import Optional, Dict, List
 from dataclasses import dataclass
-
-from fastapi import FastAPI
 from pydantic import BaseModel
-
 from inference import Predictor
 
+import sys
+sys.path.append('message_bus')
+from message_bus import MessageBus
+
+
+#print(os.path.dirname(__file__))
+
 # Get model path
-MODEL_PATH = os.path.dirname(__file__) + "/data/sequential_baseline.pt"
+MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
+print(MODEL_PATH)
+
+MESSAGE_BUS = MessageBus()
 
 # Create predictor object
 PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
-
 
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""
@@ -27,25 +33,3 @@ class ClassificationMessage(BaseModel):
     """Data model for outgoing message from TAMU Dialog Act Classifier"""
 
     classification: str
-
-
-# Create the FastAPI instance
-app = FastAPI(title="TAMU Dialogue Act Classifier", version="0.0.1")
-
-
-@app.get("/reset-model")
-def reset_model():
-    # The model should reset before each mission.
-    try:
-        PREDICTOR.reset_model()
-        return "Model successfully reset."
-    except:
-        return "Unable to reset model."
-
-
-@app.get("/classify", response_model=str)
-def classify_utterance(message: DialogAgentMessage):
-    classification = PREDICTOR.predict(
-        f"{message.participant_id}:{message.text}"
-    )
-    return classification
