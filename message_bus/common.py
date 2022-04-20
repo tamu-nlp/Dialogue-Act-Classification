@@ -4,6 +4,7 @@
 
 # Every testbed message has one of these
 class common_header:
+
   def __init__(self):
     self.timestamp = 'N/A'
     self.message_type = 'N/A'
@@ -11,3 +12,4 @@ class common_header:
 
   def write_json:
     
+

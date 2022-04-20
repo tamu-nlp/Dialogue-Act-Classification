@@ -2,4 +2,5 @@ import common
 import json
 
 class trial_message:
-  header = 
+  sub_topic = "trial"
+
