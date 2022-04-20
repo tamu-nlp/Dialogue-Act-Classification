@@ -4,6 +4,7 @@ from python:latest
 
 COPY requirements.txt .
 COPY scripts ./scripts
+COPY message_bus ./message_bus
 
 # Install dependencies
 COPY data ./data
