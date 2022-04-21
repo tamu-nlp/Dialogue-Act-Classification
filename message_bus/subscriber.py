@@ -13,7 +13,7 @@ class Subscriber:
     def do_something_useful(self, client):
         print("do_something_useful")
 
-# Asynchronous MQTT subscriber
+# Constantly looping MQTT client
 class SubscriberClient:
 
     # TODO pass these in
@@ -29,7 +29,7 @@ class SubscriberClient:
         # Paho return code definitions
         if(rc == 0):
             print("Connection successful")
-#            self.subscriber.do_something_useful(client)
+            client.subscribe("foo")
         elif(rc == 1):
             print("Connection refused - incorrect protocol version")
         elif(rc == 2):
@@ -57,9 +57,8 @@ class SubscriberClient:
     client.on_message = on_message
 
     def startup(self):
-        print("Subscriber connecting to Message Bus... ")
-        self.client.connect(
-            self.host, self.port, self.keepalive, self.bind_address)
+        print("SubscriberClient.startup.  Connecting to Message Bus... ")
+        self.client.connect(self.host, self.port, self.keepalive)
         self.client.loop_start()
 
     # Blocking call that processes network traffic, dispatches callbacks and

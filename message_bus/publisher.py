@@ -18,6 +18,7 @@ class PublisherClient:
     host = "localhost"
     port = 1883
     keepalive = 60
+    bind_address = ""
 
     def __init__(self, publisher):
         print("PublisherClient.__init__")
@@ -31,8 +32,8 @@ class PublisherClient:
     client = mqtt.Client()
 
     print("Publisher connecting to Message Bus... ")
-    client.connect(host, port, keepalive)
-    client.loop_forever()
+    client.connect(host, port, keepalive, bind_address)
+    client.loop_start()
 
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.

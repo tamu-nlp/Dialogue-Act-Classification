@@ -6,7 +6,7 @@ from inference import Predictor
 
 import sys
 sys.path.append('message_bus')
-from message_bus import MessageBus
+import message_bus
 
 
 #print(os.path.dirname(__file__))
@@ -15,10 +15,10 @@ from message_bus import MessageBus
 MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 print(MODEL_PATH)
 
-MESSAGE_BUS = MessageBus()
+MESSAGE_BUS = message_bus.MessageBus()
 
 # Create predictor object
-PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
+#PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
 
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""

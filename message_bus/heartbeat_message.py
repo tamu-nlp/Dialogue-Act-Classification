@@ -7,4 +7,5 @@ class HeartbeatMessage:
     def message():
         return "tdac_heartbeat_message"
 
-    print("HeartbeatMessage constructed")
+    def __init__(self):
+        print("HeartbeatMessage.__init__")
