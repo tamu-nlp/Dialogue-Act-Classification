@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
 
-class Subscriber():
+class Subscriber:
 
     def __init__(self):
         print("Subscriber.__init__")
