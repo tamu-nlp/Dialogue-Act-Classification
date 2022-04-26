@@ -15,10 +15,12 @@ import message_bus
 MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 print(MODEL_PATH)
 
-MESSAGE_BUS = message_bus.MessageBus()
+# instantiate the message bus handler
+def __init__(self):
+    MESSAGE_BUS = message_bus.MessageBus(self)
 
 # Create predictor object
-#PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
+PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
 
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""
