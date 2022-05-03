@@ -18,19 +18,20 @@ class PublisherClient:
     # TODO pass these in
     host = "localhost"
     port = 1883
-    keepalive = 60
+    keepalive = 6000
     bind_address = ""
+
+    client: mqtt.Client
 
     def __init__(self, publisher):
         print("PublisherClient.__init__")
         self.publisher = publisher
+        self.client = mqtt.Client()
+        print("Publisher connecting to Message Bus... ")
+        self.client.connect(self.host, self.port, self.keepalive, self.bind_address)
+        self.client.loop_start()
 
     def publish(self, topic, message):
         print("PublisherClient.publish(" + topic + ", " + message + ")")
+        self.client.publish(topic, message)
 
-
-    client = mqtt.Client()
-
-    print("Publisher connecting to Message Bus... ")
-    client.connect(host, port, keepalive, bind_address)
-    client.loop_start()

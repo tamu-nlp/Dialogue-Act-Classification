@@ -11,11 +11,11 @@ class MessageBus():
         print("MessageBus.__init__")
         self.dac_server = dac_server
         self.publisher = publisher.Publisher()
-        self.subscriber = subscriber.Subscriber()
+        self.subscriber = subscriber.Subscriber(self)
         print("MessageBus.__init__ completed")
 
-        while(True):
-            print("timed loop")
-            self.publisher.publish("bar", "the bar is open")
-            time.sleep(1)
+#        while(True):
+#            print("timed loop")
+#            self.publisher.publish("bar", "the bar is open")
+#            time.sleep(1)
 

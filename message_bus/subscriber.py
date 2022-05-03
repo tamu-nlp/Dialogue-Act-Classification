@@ -1,12 +1,14 @@
 import paho.mqtt.client as mqtt
+import json
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
 
 class Subscriber:
 
-    def __init__(self):
+    def __init__(self, message_bus):
         print("Subscriber.__init__")
+        self.message_bus = message_bus
         self.subscriber_client = SubscriberClient(self)
         self.subscriber_client.startup()
 
@@ -29,7 +31,8 @@ class SubscriberClient:
         # Paho return code definitions
         if(rc == 0):
             print("Connection successful")
-            client.subscribe("foo")
+            client.subscribe("bar")
+            client.subscribe("agent/uaz_dialog_agent/heartbeats")
         elif(rc == 1):
             print("Connection refused - incorrect protocol version")
         elif(rc == 2):
@@ -46,7 +49,7 @@ class SubscriberClient:
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(client, userdata, msg):
-        print(msg.topic + " " + str(msg.payload))
+        print("Message from " + msg.topic + ": " + str(msg.payload))
 
     def __init__(self, subscriber):
         print("SubscriberClient.__init__")
@@ -59,7 +62,7 @@ class SubscriberClient:
     def startup(self):
         print("SubscriberClient.startup.  Connecting to Message Bus... ")
         self.client.connect(self.host, self.port, self.keepalive)
-        self.client.loop_start()
+        self.client.loop_forever()
 
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.
