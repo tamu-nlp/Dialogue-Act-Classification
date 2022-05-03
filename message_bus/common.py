@@ -2,7 +2,9 @@
 
 # Define message structures used by multiple Testbed message bus message types
 
-# Every testbed message has one of these
+#  Testbed specification:
+#  https://gitlab.asist.aptima.com/asist\
+#  /testbed/-/blob/master/MessageSpecs/Common_Header/common_header.json
 class CommonHeader:
 
     def __init__(self):
@@ -14,3 +16,21 @@ class CommonHeader:
         return "JSON"
         
 
+#  Testbed specification:
+#  https://gitlab.asist.aptima.com/asist\
+#  /testbed/-/blob/master/MessageSpecs/Common_Message/common_message.json
+class CommonMsg:
+
+    def __init__(self):
+        self.experiment_id = "not_set",
+        self.trial_id = "N/A",
+        self.timestamp = "not_set",
+        self.source = "not_set",
+        self.sub_type = "not_set",
+        self.version = "not_set",
+        self.replay_root_id = "N/A",
+        self.replay_id = "N/A"
+
+    def write_json():
+        return "JSON"
+        
