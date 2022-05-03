@@ -31,8 +31,7 @@ class SubscriberClient:
         # Paho return code definitions
         if(rc == 0):
             print("Connection successful")
-            client.subscribe("bar")
-            client.subscribe("agent/uaz_dialog_agent/heartbeats")
+            client.subscribe("trial")
         elif(rc == 1):
             print("Connection refused - incorrect protocol version")
         elif(rc == 2):

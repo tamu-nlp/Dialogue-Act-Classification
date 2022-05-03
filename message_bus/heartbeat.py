@@ -1,4 +1,5 @@
 from common import CommonHeader
+from common import CommonMsg
 import json
 
 #// published Heartbeat message
@@ -21,15 +22,23 @@ import json
 
 class Heartbeat:
     pub_topic = "dialogue_act_classfier/heartbeat"
+    data = {
+        "state" : "ok",
+        "active" : True,
+        "status" : "I am processing messages"
+    }
 
     def message():
         return "tdac_heartbeat_message"
 
     def __init__(self, publisher):
-        self.publisher = publisher
         print("Heartbeat.__init__")
+        self.publisher = publisher
 
-#        while(True):
-#            print("timed loop")
-#            self.publisher.publish("heartbeat", "The beat goes on")
-#            time.sleep(1)
+    def to_json(self, timestamp):
+        x = {
+            "msg" : CommonMsg.to_json(timestamp),
+            "header" : CommonHeader.to_json(timestamp),
+            "data" : self.data
+        }
+        return json.dumps(x)

@@ -1,6 +1,10 @@
+import json
 # Authors:  Joseph Astier, Adarsh Pyarelal
 
 # Define message structures used by multiple Testbed message bus message types
+
+class Version:
+    version = "1.0.0"
 
 #  Testbed specification:
 #  https://gitlab.asist.aptima.com/asist\
@@ -8,12 +12,15 @@
 class CommonHeader:
 
     def __init__(self):
-        self.timestamp = 'N/A'
-        self.message_type = 'N/A'
-        self.version = 'N/A'
+        print("CommonHeader.__init__")
 
-    def write_json():
-        return "JSON"
+    def to_json(timestamp):
+        x = {
+            "timestamp" : timestamp,
+            "message_type" : "agent",
+            "version" : "from incoming CommonHeader"
+        }
+        return x
         
 
 #  Testbed specification:
@@ -31,6 +38,13 @@ class CommonMsg:
         self.replay_root_id = "N/A",
         self.replay_id = "N/A"
 
-    def write_json():
-        return "JSON"
-        
+    def to_json(timestamp):
+        x = {
+            "experiment_id" : "from incoming CommonMsg",
+            "trial_id" : "from incoming CommonMsg",
+            "timestamp" : timestamp,
+            "source" : "uaz_tdac_agent",
+            "sub_type" : "heartbeat",
+            "version" : Version.version
+        }
+        return x

@@ -1,29 +1,26 @@
 from common import CommonHeader
 import json
 
-#// published Heartbeat message
-#Heartbeat{
-#  topic = "agent/uaz_dialog_agent/heartbeats"
-#  beat_seconds = 10
-#  header{
-#    message_type = "status"
+#// published Rollcall response message
+#RollcallResponse {
+#  topic = "agent/control/rollcall/response"
+#  header {
+#    message_type = "agent"
 #  }
-#  msg{
-#    sub_type = "heartbeat"
+#  msg {
+#    sub_type = "rollcall:response"
 #    source = "uaz_dialog_agent"
 #  }
-#  data{
-#    state = "ok"
-#    active = true
-#    status = "I am processing messages"
-# }
+#  data {
+#    status = "up"
+#  }
 #}
 
 class RollcallResponse:
     pub_topic = "dialogue_act_classfier/heartbeat"
 
     def message():
-        return "tdac_heartbeat_message"
+        return "tdac_rollcall_response_message"
 
     def __init__(self, publisher):
         self.publisher = publisher
