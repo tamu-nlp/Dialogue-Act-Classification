@@ -3,22 +3,15 @@ import paho.mqtt.client as mqtt
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
 
-
-# non-asynchronous MQTT publisher
+# non-asynchronous Message Bus publisher
 class Publisher:
 
-    # TODO pass these in
-    host = "localhost"
-    port = 1883
-    keepalive = 6000
-    bind_address = ""
-
-    def __init__(self, message_bus):
+    def __init__(self, message_bus, host, port, keepalive):
         print("Publisher.__init__")
         self.message_bus = message_bus
         self.client = mqtt.Client()
-        print("Publisher connecting to Message Bus... ")
-        self.client.connect(self.host, self.port, self.keepalive, self.bind_address)
+        self.client.connect(host, port, keepalive, "")
+        print("Publisher connected to Message Bus. ")
         self.client.loop_start()
 
     def publish(self, topic, message):
