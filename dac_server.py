@@ -19,6 +19,10 @@ MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 # Create predictor object
 PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
 
+
+# create message bus
+message_bus = MessageBus()
+
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""
 
@@ -34,12 +38,11 @@ class ClassificationMessage(BaseModel):
     classification: str
 
 # Create the server instance
-class TdacServer:
+#class TdacServer:
+#
+#    def __init__(self):
+#        print("TDAC server init")
+#        self.message_bus = MessageBus(self)
 
-    def __init__(self):
-        print("TDAC server init")
-        self.message_bus = MessageBus(self)
 
-
-TdacServer()
 

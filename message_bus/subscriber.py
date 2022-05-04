@@ -3,7 +3,6 @@ import json
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
-
 class Subscriber:
 
     def __init__(self, message_bus):
@@ -46,7 +45,7 @@ class SubscriberClient:
             print("Connection refused - return code " + str(rc))
 
 
-    # The callback for when a PUBLISH message is received from the server.
+    # The callback when a message arrives on a subscribed topic
     def on_message(client, userdata, msg):
         print("Message from " + msg.topic + ": " + str(msg.payload))
 

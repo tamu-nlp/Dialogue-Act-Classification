@@ -21,15 +21,13 @@ import json
 #}
 
 class Heartbeat:
-    pub_topic = "dialogue_act_classfier/heartbeat"
     data = {
         "state" : "ok",
         "active" : True,
         "status" : "I am processing messages"
     }
-
-    def message():
-        return "tdac_heartbeat_message"
+    header = CommonHeader
+    msg = CommonMsg
 
     def __init__(self, publisher):
         print("Heartbeat.__init__")
@@ -37,8 +35,8 @@ class Heartbeat:
 
     def to_json(self, timestamp):
         x = {
-            "msg" : CommonMsg.to_json(timestamp),
-            "header" : CommonHeader.to_json(timestamp),
+            "msg" : self.msg.to_json(timestamp),
+            "header" : self.header.to_json(timestamp),
             "data" : self.data
         }
         return json.dumps(x)

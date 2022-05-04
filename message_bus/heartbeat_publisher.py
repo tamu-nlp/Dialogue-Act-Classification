@@ -1,15 +1,18 @@
 import publisher
-from heartbeat import Heartbeat
 import json
+import threading
+import time
+import logging
 
 
-class HeartbeatProducer:
+class HeartbeatPublisher:
+    pub_topic = "dialogue_act_classfier/heartbeat"
+    heartbeat_interval = 2 # seconds
+
+    def beat(self):
+        self.message_bus.publish(self.pub_topic, "Heartbeat message")
+        print(time.ctime())
 
     def __init__(self, message_bus):
-        print("HeartbeatProducer.__init__")
         self.message_bus = message_bus
-        self.heartbeat = Heartbeat
-        timestamp = "TIMESTAMP"
-        print (self.heartbeat.to_json(self.heartbeat, timestamp))
-
-
+        threading.Timer(self.heartbeat_interval, self.beat).start()
