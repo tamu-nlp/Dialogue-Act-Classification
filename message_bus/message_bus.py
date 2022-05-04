@@ -9,11 +9,14 @@ class MessageBus():
 
     publisher: Publisher
 
-    def __init__(self):
+    # MQTT clients
+    keepalive = 6000
+
+    def __init__(self, host, port):
         print("MessageBus.__init__")
-        self.publisher = Publisher(self)
+        self.publisher = Publisher(self, host, port, self.keepalive)
         self.heartbeat_publisher = HeartbeatPublisher(self.publisher)
-        self.subscriber = subscriber.Subscriber(self)
+        self.subscriber = subscriber.Subscriber(self, host, port, self.keepalive)
         print("MessageBus.__init__ completed")
 
 

@@ -20,8 +20,11 @@ MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
 
 
-# create message bus
-message_bus = MessageBus()
+# MQTT broker network location
+mqtt_host = "localhost"
+mqtt_port = 1883
+# Message Bus with MQTT
+message_bus = MessageBus(mqtt_host, mqtt_port)
 
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""
