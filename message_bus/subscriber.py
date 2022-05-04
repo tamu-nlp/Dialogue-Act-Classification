@@ -30,8 +30,17 @@ class Subscriber:
 
     # Get extra characters off the ends of the msg.payload string
     def clean_msg_payload(self, msg):
-        return "{\"topic\": \"trial\"}"
+        print("Subscriber.clean_msg_payload()")
+        payload = str(msg.payload.decode("utf-8"))
+        l_brace = payload.find("{")
+        r_brace = payload.rfind("}")+1
+        clean_payload = "\"" + payload[l_brace : r_brace] + "\""
+        return clean_payload
 
+    def on_trial_message(self, client, userdata, msg):
+        print("Subscriber.on_trial_message")
+        txt = self.clean_msg_payload(msg)
+        print(txt)
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
@@ -44,5 +53,6 @@ class Subscriber:
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+        self.client.message_callback_add("trial",self.on_trial_message)
         self.client.connect(host, port, keepalive)
         self.client.loop_forever()

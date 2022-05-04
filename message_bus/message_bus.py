@@ -24,10 +24,10 @@ class MessageBus():
         print("  " + message)
         self.publisher.publish(topic, message)
 
-    def on_message(self, topic, message):
-        print("MessageBus.on_message")
-        print("  " + topic)
-        print("  " + message)
-        if(topic == "trial"):
-            trial_message = TrialMessage(message)
+#    def on_message(self, topic, message):
+#        print("MessageBus.on_message")
+#        print("  " + topic)
+#        print("  " + message)
+#        if(topic == "trial"):
+#            trial_message = TrialMessage(message)
 

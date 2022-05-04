@@ -8,7 +8,7 @@ import logging
 
 class HeartbeatPublisher:
     pub_topic = "dialogue_act_classfier/heartbeat"
-    heartbeat_interval = 2 # seconds
+    heartbeat_seconds = 10 
 
     # Create a heartbeat message and send it off for publishing
     def heartbeat(self):
@@ -17,7 +17,7 @@ class HeartbeatPublisher:
     # trigger heartbeats on a preset interval
     def pulse(self, foo):
         ticker = threading.Event()
-        while not ticker.wait(self.heartbeat_interval):
+        while not ticker.wait(self.heartbeat_seconds):
             self.heartbeat()
 
     # Start the pulse in a seperate thread so MQTT clients are not blocked
