@@ -28,10 +28,15 @@ class Subscriber:
         else:
             print("Connection refused - return code " + str(rc))
 
+    # Get extra characters off the ends of the msg.payload string
+    def clean_msg_payload(self, msg):
+        return "{\"topic\": \"trial\"}"
+
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
-        self.message_bus.on_message(msg.topic, str(msg.payload))
+        json_string = self.clean_msg_payload(msg)
+        self.message_bus.on_message(msg.topic, json_string)
 
     def __init__(self, message_bus, host, port, keepalive):
         print("Subscriber.__init__")

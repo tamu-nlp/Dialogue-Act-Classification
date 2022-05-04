@@ -1,5 +1,9 @@
 import common
 import json
 
-class trial_message:
-    sub_topic = "trial"
+class TrialMessage:
+
+    def __init__(self, message):
+        print("TrialMessage.__init__")
+        print("message = " + message)
+        self.foo = json.loads(message)

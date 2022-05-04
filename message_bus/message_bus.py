@@ -1,6 +1,7 @@
 import subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
+from trial_message import TrialMessage
 import time
 
 
@@ -27,3 +28,6 @@ class MessageBus():
         print("MessageBus.on_message")
         print("  " + topic)
         print("  " + message)
+        if(topic == "trial"):
+            trial_message = TrialMessage(message)
+
