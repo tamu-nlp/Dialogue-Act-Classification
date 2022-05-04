@@ -1,0 +1,5 @@
+import common
+import json
+
+class TdacMessage:
+    topic = "agent/tdac"

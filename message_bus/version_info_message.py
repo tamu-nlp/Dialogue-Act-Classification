@@ -20,7 +20,7 @@ import json
 #}
 
 
-class VersionInfo:
+class VersionInfoMessage:
     pub_topic = "agent/dialogue_act_classfier/versioninfo"
 
     def message():

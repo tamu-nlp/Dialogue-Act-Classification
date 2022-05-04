@@ -3,6 +3,7 @@ from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from trial_message import TrialMessage
 import time
+import json
 
 
 # Coordinator class for all things Message Bus
@@ -18,11 +19,16 @@ class MessageBus():
         self.subscriber = subscriber.Subscriber(self, host, port, self.keepalive)
         print("MessageBus.__init__ completed")
 
-    def publish(self, topic, message):
+    def publish_dict(self, topic, d):
+        dump = json.loads(d)
         print("MessageBus publish")
         print("  " + topic)
-        print("  " + message)
-        self.publisher.publish(topic, message)
+        print("  " + dump)
+        self.publisher.publish(topic, dump)
+
+    def on_trial_message(self, trial_msg):
+        self.heartbeat_publisher.on_trial_message(trial_message)
+
 
 #    def on_message(self, topic, message):
 #        print("MessageBus.on_message")

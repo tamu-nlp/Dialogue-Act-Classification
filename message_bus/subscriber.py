@@ -3,6 +3,8 @@ import json
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
+# This class receives messages on subscribed topics and sends them
+# to the MessageBus owning class as dictionaries for further processing
 
 # Constantly looping MQTT client
 class Subscriber:
@@ -30,17 +32,16 @@ class Subscriber:
 
     # Get extra characters off the ends of the msg.payload string
     def clean_msg_payload(self, msg):
-        print("Subscriber.clean_msg_payload()")
         payload = str(msg.payload.decode("utf-8"))
         l_brace = payload.find("{")
         r_brace = payload.rfind("}")+1
-        clean_payload = "\"" + payload[l_brace : r_brace] + "\""
+        clean_payload = payload[l_brace : r_brace] 
         return clean_payload
 
     def on_trial_message(self, client, userdata, msg):
-        print("Subscriber.on_trial_message")
-        txt = self.clean_msg_payload(msg)
-        print(txt)
+        clean_json_txt = self.clean_msg_payload(msg)
+        trial_message_dict = json.loads(clean_json_txt)
+        self.message_bus.on_trial_message(trial_message_dict)
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
@@ -48,7 +49,6 @@ class Subscriber:
         self.message_bus.on_message(msg.topic, json_string)
 
     def __init__(self, message_bus, host, port, keepalive):
-        print("Subscriber.__init__")
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect

@@ -20,7 +20,7 @@ import json
 # }
 #}
 
-class Heartbeat:
+class HeartbeatMessage:
     data = {
         "state" : "ok",
         "active" : True,
@@ -29,14 +29,23 @@ class Heartbeat:
     header = CommonHeader
     msg = CommonMsg
 
-    def __init__(self, publisher):
+    def __init__(self):
         print("Heartbeat.__init__")
-        self.publisher = publisher
 
-    def to_json(self, timestamp):
-        x = {
+    def from_trial_message(self, trial_message_dict):
+        print("Heartbeat.from_trial_message")
+        sub_type = trial_msg['msg']['sub_type']
+        if(sub_type == 'start'):
+            print("Trial start")
+        elif f(sub_type == 'stop'):
+            print("Trial stop")
+
+
+
+    def to_dict(self, timestamp):
+        d = {
             "msg" : self.msg.to_json(timestamp),
             "header" : self.header.to_json(timestamp),
             "data" : self.data
         }
-        return json.dumps(x)
+        return d
