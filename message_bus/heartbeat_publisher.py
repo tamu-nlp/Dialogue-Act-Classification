@@ -4,15 +4,27 @@ import threading
 import time
 import logging
 
+# This class generates a heartbeat message on the heartbeat interval in a
+# seperate thread that does not block the MQTT clients 
 
 class HeartbeatPublisher:
     pub_topic = "dialogue_act_classfier/heartbeat"
     heartbeat_interval = 2 # seconds
 
-    def beat(self):
+    # Create a heartbeat message and send it off for publishing
+    def heartbeat(self):
         self.message_bus.publish(self.pub_topic, "Heartbeat message")
         print(time.ctime())
 
+    # trigger heartbeats on a preset interval
+    def pulse(self, foo):
+        ticker = threading.Event()
+        while not ticker.wait(self.heartbeat_interval):
+            self.heartbeat()
+
+    # Start the pulse in a seperate thread so MQTT clients are not blocked
     def __init__(self, message_bus):
         self.message_bus = message_bus
-        threading.Timer(self.heartbeat_interval, self.beat).start()
+        self.beat() # send a beat immediately
+        t1 = threading.Thread(target=self.pulse, args=("foo",))
+        t1.start()
