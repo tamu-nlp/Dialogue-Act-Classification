@@ -1,4 +1,4 @@
-import publisher
+from publisher import Publisher
 import json
 import threading
 import time
@@ -13,8 +13,7 @@ class HeartbeatPublisher:
 
     # Create a heartbeat message and send it off for publishing
     def heartbeat(self):
-        self.message_bus.publish(self.pub_topic, "Heartbeat message")
-        print(time.ctime())
+        self.publisher.publish(self.pub_topic, "Heartbeat message")
 
     # trigger heartbeats on a preset interval
     def pulse(self, foo):
@@ -23,8 +22,14 @@ class HeartbeatPublisher:
             self.heartbeat()
 
     # Start the pulse in a seperate thread so MQTT clients are not blocked
-    def __init__(self, message_bus):
-        self.message_bus = message_bus
-        self.beat() # send a beat immediately
+    def __init__(self, publisher):
+        print("HeartbeatPublisher.__init__")
+        self.publisher = publisher
+        self.heartbeat() # send a beat immediately
         t1 = threading.Thread(target=self.pulse, args=("foo",))
         t1.start()
+
+    # Handle a trial message from the Message Bus
+    def trial(self, trial_message):
+        pass
+
