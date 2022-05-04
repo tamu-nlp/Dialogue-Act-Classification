@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+mosquitto_pub -t trial -f trial_start.json
