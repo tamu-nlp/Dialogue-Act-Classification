@@ -4,10 +4,8 @@ from heartbeat_publisher import HeartbeatPublisher
 import time
 
 
-# This class manages input and output on the message bus
+# Coordinator class for all things Message Bus
 class MessageBus():
-
-    publisher: Publisher
 
     # MQTT clients
     keepalive = 6000
@@ -15,10 +13,9 @@ class MessageBus():
     def __init__(self, host, port):
         print("MessageBus.__init__")
         self.publisher = Publisher(self, host, port, self.keepalive)
-        self.heartbeat_publisher = HeartbeatPublisher(self.publisher)
+        self.heartbeat_publisher = HeartbeatPublisher(self)
         self.subscriber = subscriber.Subscriber(self, host, port, self.keepalive)
         print("MessageBus.__init__ completed")
-
 
     def publish(self, topic, message):
         print("MessageBus publish")
@@ -26,3 +23,7 @@ class MessageBus():
         print("  " + message)
         self.publisher.publish(topic, message)
 
+    def on_message(self, topic, message):
+        print("MessageBus.on_message")
+        print("  " + topic)
+        print("  " + message)

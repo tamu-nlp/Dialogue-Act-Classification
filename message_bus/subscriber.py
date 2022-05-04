@@ -31,7 +31,7 @@ class Subscriber:
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
-        print("Message from " + msg.topic + ": " + str(msg.payload))
+        self.message_bus.on_message(msg.topic, str(msg.payload))
 
     def __init__(self, message_bus, host, port, keepalive):
         print("Subscriber.__init__")
