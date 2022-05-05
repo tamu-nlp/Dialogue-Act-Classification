@@ -26,30 +26,33 @@ class HeartbeatMessage (utils.Utils):
         }
     }
 
-    # Set dictionary values from trial message
-    def from_trial_message(self, trial_message_d):
-        # update the common header
-        src = trial_message_d["header"]
+    # Set dictionary values from trial message dictionary
+    # @param tm_d A Trial Message dicationary
+    def from_trial_message(self, tm_d):
+
+        # update common header
+        src = tm_d["header"]
         dst = self.d["header"]
         self.update_field(src, dst, "version")
 
-        # update the common msg
-        src = trial_message_d["msg"]
+        # update common msg
+        src = tm_d["msg"]
         dst = self.d["msg"]
-        self.update_field(src, dst,"experiment_id")
-        self.update_field(src, dst,"replay_parent_type")
-        self.update_field(src, dst,"replay_id")
-        self.update_field(src, dst,"replay_parent_id")
+        self.update_field(src, dst, "experiment_id")
+        self.update_field(src, dst, "replay_parent_type")
+        self.update_field(src, dst, "replay_id")
+        self.update_field(src, dst, "replay_parent_id")
+        self.update_field(src, dst, "trial_id")
 
         # inclue the trial ID or delete it depending on trial state
-        key = "sub_type"
-        if(key in src):
-            # If it's a trial start, add the trial id
-            if (src[key] == "start"):
-                self.update_field(src, dst,"trial_id")
-            # If it's a trial stop, remove the trial id
-            elif ((src[key] == "stop") and ("trial_id" in dst)):
-                del(dst["trial_id"])
+#        key = "sub_type"
+#        if(key in src):
+#            # If it's a trial start, add the trial id
+#            if (src[key] == "start"):
+#                self.update_field(src, dst,"trial_id")
+#            # If it's a trial stop, remove the trial id
+#            elif ((src[key] == "stop") and ("trial_id" in dst)):
+#                del(dst["trial_id"])
 
         return self.d
 
