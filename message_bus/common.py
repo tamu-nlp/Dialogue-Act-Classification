@@ -10,41 +10,42 @@ class Version:
 #  https://gitlab.asist.aptima.com/asist\
 #  /testbed/-/blob/master/MessageSpecs/Common_Header/common_header.json
 class CommonHeader:
+    d = {
+        "timestamp" : "not_set",
+        "message_type" : "not_set",
+        "version" : "not_set"
+    }
 
     def __init__(self):
-        print("CommonHeader.__init__")
+        pass
 
-    def to_json(timestamp):
-        x = {
-            "timestamp" : timestamp,
-            "message_type" : "agent",
-            "version" : "from incoming CommonHeader"
-        }
-        return x
+    def set_timestamp(self, timestamp):
+        d['timestamp'] = timestamp
+
+    def to_dict(self):
+        return self.d
         
 
 #  Testbed specification:
 #  https://gitlab.asist.aptima.com/asist\
 #  /testbed/-/blob/master/MessageSpecs/Common_Message/common_message.json
 class CommonMsg:
+    d = {
+        "experiment_id" : "not_set",
+        "trial_id" : "N/A",
+        "timestamp" : "not_set",
+        "source" : "not_set",
+        "sub_type" : "not_set",
+        "version" : Version.version,
+        "replay_root_id" : "N/A",
+        "replay_id" : "N/A"
+    }
+
+    def set_timestamp(self, timestamp):
+        d['timestamp'] = timestamp
 
     def __init__(self):
-        self.experiment_id = "not_set",
-        self.trial_id = "N/A",
-        self.timestamp = "not_set",
-        self.source = "not_set",
-        self.sub_type = "not_set",
-        self.version = "not_set",
-        self.replay_root_id = "N/A",
-        self.replay_id = "N/A"
+        pass
 
-    def to_json(timestamp):
-        x = {
-            "experiment_id" : "from incoming CommonMsg",
-            "trial_id" : "from incoming CommonMsg",
-            "timestamp" : timestamp,
-            "source" : "uaz_tdac_agent",
-            "sub_type" : "heartbeat",
-            "version" : Version.version
-        }
-        return x
+    def to_dict(self):
+        return self.d
