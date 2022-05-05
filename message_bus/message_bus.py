@@ -1,6 +1,5 @@
 from subscriber import Subscriber
 from publisher import Publisher
-from trial_message import TrialMessage
 from heartbeat_publisher import HeartbeatPublisher
 import time
 import json
