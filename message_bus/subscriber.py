@@ -49,5 +49,5 @@ class Subscriber:
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(host, port, 0)
+        self.client.connect(host, port, 6000)
         self.client.loop_forever()

@@ -1,9 +1,9 @@
 from version import Version
-import utils
+from utils import Utils
 import json
 
 
-class HeartbeatMessage (utils.Utils):
+class HeartbeatMessage(Utils):
     topic = "dialogue_act_classfier/heartbeat"
     # Default dictionary before any messages have been read from the bus
     d = {
@@ -49,8 +49,3 @@ class HeartbeatMessage (utils.Utils):
             del dst["trial_id"]
 
         return self.d
-
-    # set the same timestamp on the header and msg
-    def set_timestamp(self, timestamp):
-        self.d['header']['timestamp'] = timestamp
-        self.d['msg']['timestamp'] = timestamp

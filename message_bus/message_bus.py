@@ -5,7 +5,6 @@ from version_info_message import VersionInfoMessage
 import time
 import json
 
-
 # Coordinator class for all things Message Bus
 class MessageBus():
 
