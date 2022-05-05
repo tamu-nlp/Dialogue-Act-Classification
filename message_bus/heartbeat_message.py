@@ -26,18 +26,22 @@ class HeartbeatMessage (utils.Utils):
         }
     }
 
-    # copy common header fields
-    def update_header(self, src_d, dst_d):
-        src = src_d["header"]
-        dst = dst_d["header"]
-
+    # Set dictionary values from trial message
+    def from_trial_message(self, trial_message_d):
+        # update the common header
+        src = trial_message_d["header"]
+        dst = self.d["header"]
         self.update_field(src, dst, "version")
 
-    # copy common msg fields
-    def update_msg(self, src_d, dst_d):
-        src = src_d["msg"]
-        dst = dst_d["msg"]
+        # update the common msg
+        src = trial_message_d["msg"]
+        dst = self.d["msg"]
+        self.update_field(src, dst,"experiment_id")
+        self.update_field(src, dst,"replay_parent_type")
+        self.update_field(src, dst,"replay_id")
+        self.update_field(src, dst,"replay_parent_id")
 
+        # inclue the trial ID or delete it depending on trial state
         key = "sub_type"
         if(key in src):
             # If it's a trial start, add the trial id
@@ -47,20 +51,7 @@ class HeartbeatMessage (utils.Utils):
             elif ((src[key] == "stop") and ("trial_id" in dst)):
                 del(dst["trial_id"])
 
-        # update fields from trial message
-        self.update_field(src, dst,"experiment_id")
-        self.update_field(src, dst,"replay_parent_type")
-        self.update_field(src, dst,"replay_id")
-        self.update_field(src, dst,"replay_parent_id")
-
-
-    # Set dictionary values from trial message
-    def from_trial_message(self, trial_message_d):
-        new_d = self.d
-        self.update_header(trial_message_d, new_d)
-        self.update_msg(trial_message_d, new_d)
-        return new_d
-
+        return self.d
 
     # set the same timestamp on the header and msg
     def set_timestamp(self, timestamp):
