@@ -4,7 +4,7 @@ import json
 
 
 class HeartbeatMessage (utils.Utils):
-
+    topic = "dialogue_act_classfier/heartbeat"
     # Default dictionary before any messages have been read from the bus
     d = {
         "data" : {
@@ -42,17 +42,11 @@ class HeartbeatMessage (utils.Utils):
         self.update_field(src, dst, "replay_parent_type")
         self.update_field(src, dst, "replay_id")
         self.update_field(src, dst, "replay_parent_id")
-        self.update_field(src, dst, "trial_id")
 
-        # inclue the trial ID or delete it depending on trial state
-#        key = "sub_type"
-#        if(key in src):
-#            # If it's a trial start, add the trial id
-#            if (src[key] == "start"):
-#                self.update_field(src, dst,"trial_id")
-#            # If it's a trial stop, remove the trial id
-#            elif ((src[key] == "stop") and ("trial_id" in dst)):
-#                del(dst["trial_id"])
+        if("trial_id") in src:
+            self.update_field(src, dst, "trial_id")
+        elif("trial_id" in dst):
+            del dst["trial_id"]
 
         return self.d
 
