@@ -9,7 +9,7 @@ import json
 # Coordinator class for all things Message Bus
 class MessageBus():
 
-    # MQTT client art
+    # MQTT clients 
     keepalive = 6000
 
     def __init__(self, host, port):
@@ -19,12 +19,17 @@ class MessageBus():
         # blocking call 
         self.subscriber = Subscriber(self, host, port, self.keepalive)
 
-    def on_trial_message(self, trial_message_d):
-        self.heartbeat_publisher.on_trial_message(trial_message_d)
-        trial_sub_type = trial_message_d["msg"]["sub_type"]
-        if(trial_sub_type == "start"):
-            version_info_msg = VersionInfoMessage(trial_message_d)
-            self.publish(version_info_msg.topic, version_info_msg.d)
+    def on_message(self, topic, message_d):
+        if(topic == "trial"):
+            self.heartbeat_publisher.on_trial_message(message_d)
+            trial_sub_type = message_d["msg"]["sub_type"]
+            if(trial_sub_type == "start"):
+                version_info_msg = VersionInfoMessage(message_d)
+                self.publish(version_info_msg.topic, version_info_msg.d)
+        elif(topic == "agent/control/rollcall/request"):
+            pass
+        elif(topic == "agent/asr/final"):
+            pass
 
-    def publish(self, topic, message_dict):
-        self.publisher.publish(topic, message_dict)
+    def publish(self, topic, message_d):
+        self.publisher.publish(topic, message_d)

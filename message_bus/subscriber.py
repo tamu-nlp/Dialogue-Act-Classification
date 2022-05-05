@@ -30,29 +30,24 @@ class Subscriber:
         else:
             print("Connection refused - return code " + str(rc))
 
-    # Get extra characters off the ends of the msg.payload string
-    def clean_msg_payload(self, msg):
+    # Return a dictionary composed from a Message Bus message
+    def d_from_message(self, msg):
         payload = str(msg.payload.decode("utf-8"))
         l_brace = payload.find("{")
         r_brace = payload.rfind("}")+1
-        clean_payload = payload[l_brace : r_brace] 
-        return clean_payload
-
-    def on_trial_message(self, client, userdata, msg):
-        clean_json_txt = self.clean_msg_payload(msg)
-        trial_message_dict = json.loads(clean_json_txt)
-        self.message_bus.on_trial_message(trial_message_dict)
+        clean_json_txt = payload[l_brace : r_brace] 
+        message_d = json.loads(clean_json_txt)
+        return message_d
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
-        json_string = self.clean_msg_payload(msg)
-        self.message_bus.on_message(msg.topic, json_string)
+        message_d = self.d_from_message(msg)
+        self.message_bus.on_message(msg.topic, message_d)
 
     def __init__(self, message_bus, host, port, keepalive):
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.message_callback_add("trial",self.on_trial_message)
         self.client.connect(host, port, keepalive)
         self.client.loop_forever()

@@ -27,16 +27,16 @@ class HeartbeatMessage (utils.Utils):
     }
 
     # Set dictionary values from trial message dictionary
-    # @param tm_d A Trial Message dicationary
-    def from_trial_message(self, tm_d):
+    # @param message_d A Trial Message dicationary
+    def from_trial_message(self, message_d):
 
         # update common header
-        src = tm_d["header"]
+        src = message_d["header"]
         dst = self.d["header"]
         self.update_field(src, dst, "version")
 
         # update common msg
-        src = tm_d["msg"]
+        src = message_d["msg"]
         dst = self.d["msg"]
         self.update_field(src, dst, "experiment_id")
         self.update_field(src, dst, "replay_parent_type")
