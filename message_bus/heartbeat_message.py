@@ -1,4 +1,4 @@
-from common import Version
+from version import Version
 import utils
 import json
 
