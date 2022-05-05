@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-from trial_subscriber import TrialSubscriber
 import json
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
@@ -42,7 +41,7 @@ class Subscriber:
     def on_trial_message(self, client, userdata, msg):
         clean_json_txt = self.clean_msg_payload(msg)
         trial_message_dict = json.loads(clean_json_txt)
-        self.trial_subscriber.on_trial_message(trial_message_dict)
+        self.message_bus.on_trial_message(trial_message_dict)
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
@@ -51,7 +50,6 @@ class Subscriber:
 
     def __init__(self, message_bus, host, port, keepalive):
         self.message_bus = message_bus
-        self.trial_subscriber = TrialSubscriber(message_bus)
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message

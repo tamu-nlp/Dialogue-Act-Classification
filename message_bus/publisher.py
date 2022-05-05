@@ -2,9 +2,7 @@ import paho.mqtt.client as mqtt
 from heartbeat_publisher import HeartbeatPublisher
 import json
 
-
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
-
 
 # non-asynchronous Message Bus publisher
 class Publisher:
@@ -12,7 +10,6 @@ class Publisher:
     def __init__(self, message_bus, host, port, keepalive):
         print("Publisher.__init__")
         self.message_bus = message_bus
-        self.heartbeat_publisher = HeartbeatPublisher(self)
         self.client = mqtt.Client()
         self.client.connect(host, port, keepalive, "")
         print("Publisher connected to Message Bus. ")
@@ -22,6 +19,5 @@ class Publisher:
         print("Publisher.publish")
         print("  topic : " + topic)
         print("  message : " + json.dumps(d, indent=2))
-
         self.client.publish(topic, json.dumps(d))
 

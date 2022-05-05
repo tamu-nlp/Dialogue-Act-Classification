@@ -1,59 +1,75 @@
-from common import CommonHeader
-from common import CommonMsg
+from common import Version
 import json
 
-#// published Heartbeat message
-#Heartbeat{
-#  topic = "agent/uaz_dialog_agent/heartbeats"
-#  beat_seconds = 10
-#  header{
-#    message_type = "status"
-#  }
-#  msg{
-#    sub_type = "heartbeat"
-#    source = "uaz_dialog_agent"
-#  }
-#  data{
-#    state = "ok"
-#    active = true
-#    status = "I am processing messages"
-# }
-#}
 
 class HeartbeatMessage:
+    data = {
+        "state" : "ok",
+        "active" : True,
+        "status" : "I am processing messages"
+    }
+
+    # default before any messages have been read from the bus
     d = {
-        "header" : CommonHeader.d,
-        "msg" : CommonMsg.d,
-        "data" : {
-            "state" : "ok",
-            "active" : True,
-            "status" : "I am processing messages"
+        "data" : data,
+        "header" : {
+            "message_type" : "status",
+            "timestamp" : "not_set",
+            "version" : "not_set"
+        },
+        "msg" : {
+            "experiment_id" : "not_set",
+            "source" : "uaz_tdac_agent",
+            "sub_type": "heartbeat",
+            "timestamp" : "not_set",
+            "version": Version.version
         }
     }
 
-    def from_trial_message(self, trial_message_dict):
-        print("HeartbeatMessage.from_trial_message")
-        sub_type = trial_msg['msg']['sub_type']
-        if(sub_type == 'start'):
-            print("Trial start")
-        elif f(sub_type == 'stop'):
-            print("Trial stop")
+    def __init__(self):
+        pass
 
+    def __init__(self, trial_message_dict):
+        self.d = {
+            "data" : self.data,
+            "header" : {
+                "message_type" : "status",
+                "timestamp" : "not_set",
+                "version" : trial_message_dict["header"]["version"]
+            },
+            "msg" : {
+                "experiment_id" : trial_message_dict["msg"]["experiment_id"],
+                "source" : "uaz_tdac_agent",
+                "sub_type": "heartbeat",
+                "timestamp" : "not_set",
+                "version": Version.version
+            }
+        }
 
-#    def set_timestamp(self, timestamp):
+        # If it's a trial start, add the trial id
+        trial_sub_type = trial_message_dict["msg"]["sub_type"]
+        if(trial_sub_type == "start"):
+            trial_id = {"trial_id": trial_message_dict["msg"]["trial_id"]}
+            self.d["msg"].update(trial_id)
 
+        # Check for non-null replay_parent_type
+        replay_parent_type = trial_message_dict["msg"]["replay_parent_type"]
+        if(replay_parent_type != null):
+            self.d["msg"].update({"replay_parent_type" : replay_parent_type})
 
+        # Check for non-null replay_id
+        replay_id = trial_message_dict["msg"]["replay_id"]
+        if(replay_id != null):
+            self.d["msg"].update({"replay_id" : replay_id})
 
-#    def to_dict(self, timestamp):
-#        msg_dict = self.msg.to_dict()
-#        header_dict = self.header.to_dict()
+        # Check for non-null replay_parent_id
+        replay_parent_id = trial_message_dict["msg"]["replay_parent_id"]
+        if(replay_parent_id != null):
+            self.d["msg"].update({"replay_parent_id" : replay_parent_id})
 
-#        msg_dict['timestamp']= timestamp
-#        header_dict['timestamp']= timestamp
+        return self.d
 
-#        d = {
-#            "msg" : msg_dict
-#            "header" : header_dict
-#            "data" : self.data
-#        }
-#        return d
+    # set the same timestamp on the header and msg
+    def set_timestamp(self, timestamp):
+        self.d['header']['timestamp'] = timestamp
+        self.d['msg']['timestamp'] = timestamp
