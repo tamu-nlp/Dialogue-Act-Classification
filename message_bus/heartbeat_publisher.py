@@ -9,7 +9,6 @@ import message_bus
 # seperate thread that does not block the MQTT clients 
 
 class HeartbeatPublisher:
-    pub_topic = "dialogue_act_classfier/heartbeat"
     heartbeat_interval_seconds = 10 
     hbm = HeartbeatMessage()
     d = hbm.d
@@ -17,7 +16,7 @@ class HeartbeatPublisher:
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
         print("HeartbeatPublisher.publish_heartbeat")
-        self.message_bus.publish(self.pub_topic, self.d)
+        self.message_bus.publish(self.hbm.topic, self.d)
 
     # Create a heartbeat message and send it off for publishing
     def foo_heartbeat(self):
@@ -44,4 +43,4 @@ class HeartbeatPublisher:
         print("HeartbeatPublisher.on_trial_message")
         self.d = self.hbm.from_trial_message(trial_message_dict)
         # send one right away on any trial message
-        self.message_bus.publish(self.pub_topic, self.d)
+        self.publish_heartbeat()
