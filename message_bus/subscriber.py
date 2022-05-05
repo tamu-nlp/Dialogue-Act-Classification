@@ -44,10 +44,10 @@ class Subscriber:
         message_d = self.d_from_message(msg)
         self.message_bus.on_message(msg.topic, message_d)
 
-    def __init__(self, message_bus, host, port, keepalive):
+    def __init__(self, message_bus, host, port):
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(host, port, keepalive)
+        self.client.connect(host, port, 0)
         self.client.loop_forever()

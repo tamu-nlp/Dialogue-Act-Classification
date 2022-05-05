@@ -9,15 +9,12 @@ import json
 # Coordinator class for all things Message Bus
 class MessageBus():
 
-    # MQTT clients 
-    keepalive = 6000
-
     def __init__(self, host, port):
         print("MessageBus.__init__")
-        self.publisher = Publisher(self, host, port, self.keepalive)
+        self.publisher = Publisher(self, host, port)
         self.heartbeat_publisher = HeartbeatPublisher(self)
         # blocking call 
-        self.subscriber = Subscriber(self, host, port, self.keepalive)
+        self.subscriber = Subscriber(self, host, port)
 
     def on_message(self, topic, message_d):
         if(topic == "trial"):

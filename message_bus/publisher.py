@@ -7,11 +7,11 @@ import json
 # non-asynchronous Message Bus publisher
 class Publisher:
 
-    def __init__(self, message_bus, host, port, keepalive):
+    def __init__(self, message_bus, host, port):
         print("Publisher.__init__")
         self.message_bus = message_bus
         self.client = mqtt.Client()
-        self.client.connect(host, port, keepalive, "")
+        self.client.connect(host, port, 0, "")
         print("Publisher connected to Message Bus. ")
         self.client.loop_start()
 
