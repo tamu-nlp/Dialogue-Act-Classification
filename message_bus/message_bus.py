@@ -14,8 +14,9 @@ class MessageBus():
 
     def __init__(self, host, port):
         print("MessageBus.__init__")
-        self.heartbeat_publisher = HeartbeatPublisher(self)
         self.publisher = Publisher(self, host, port, self.keepalive)
+        self.heartbeat_publisher = HeartbeatPublisher(self)
+        # blocking call 
         self.subscriber = Subscriber(self, host, port, self.keepalive)
 
     def on_trial_message(self, trial_message_dict):

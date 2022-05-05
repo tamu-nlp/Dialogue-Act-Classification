@@ -3,15 +3,14 @@ import json
 
 
 class HeartbeatMessage:
-    data = {
-        "state" : "ok",
-        "active" : True,
-        "status" : "I am processing messages"
-    }
 
-    # default before any messages have been read from the bus
+    # Default dictionary before any messages have been read from the bus
     d = {
-        "data" : data,
+        "data" : {
+            "state" : "ok",
+            "active" : True,
+            "status" : "I am processing messages"
+        },
         "header" : {
             "message_type" : "status",
             "timestamp" : "not_set",
@@ -26,12 +25,15 @@ class HeartbeatMessage:
         }
     }
 
-    def __init__(self):
-        pass
 
-    def __init__(self, trial_message_dict):
+    # Set dictionary values from trial message
+    def from_trial_message(self, trial_message_dict):
         self.d = {
-            "data" : self.data,
+            "data" : {
+                "state" : "ok",
+                "active" : True,
+                "status" : "I am processing messages"
+            },
             "header" : {
                 "message_type" : "status",
                 "timestamp" : "not_set",
@@ -47,25 +49,32 @@ class HeartbeatMessage:
         }
 
         # If it's a trial start, add the trial id
-        trial_sub_type = trial_message_dict["msg"]["sub_type"]
-        if(trial_sub_type == "start"):
-            trial_id = {"trial_id": trial_message_dict["msg"]["trial_id"]}
-            self.d["msg"].update(trial_id)
+        if ("sub_type" in trial_message_dict["msg"]):
+            v = trial_message_dict["msg"]["sub_type"]
+            if(v == "start"):
+                kv = {"trial_id": trial_message_dict["msg"]["trial_id"]}
+                self.d["msg"].update(kv)
 
         # Check for non-null replay_parent_type
-        replay_parent_type = trial_message_dict["msg"]["replay_parent_type"]
-        if(replay_parent_type != null):
-            self.d["msg"].update({"replay_parent_type" : replay_parent_type})
+        if ("replay_parent_type" in trial_message_dict["msg"]):
+            v = trial_message_dict["msg"]["replay_parent_type"]
+            if(v != None):
+                kv =({"replay_parent_type" : replay_parent_type})
+                self.d["msg"].update(kv)
 
         # Check for non-null replay_id
-        replay_id = trial_message_dict["msg"]["replay_id"]
-        if(replay_id != null):
-            self.d["msg"].update({"replay_id" : replay_id})
+        if ("replay_id" in trial_message_dict["msg"]):
+            v = trial_message_dict["msg"]["replay_id"]
+            if(v != None):
+                kv = ({"replay_id" : replay_id})
+                self.d["msg"].update(kv)
 
         # Check for non-null replay_parent_id
-        replay_parent_id = trial_message_dict["msg"]["replay_parent_id"]
-        if(replay_parent_id != null):
-            self.d["msg"].update({"replay_parent_id" : replay_parent_id})
+        if ("replay_parent_id" in trial_message_dict["msg"]):
+            v = trial_message_dict["msg"]["replay_parent_id"]
+            if(v != None):
+                kv = ({"replay_parent_id" : replay_parent_id})
+                self.d["msg"].update(kv)
 
         return self.d
 
