@@ -42,11 +42,3 @@ class CommonMsg:
         "replay_id" : "N/A"
     }
 
-    def copy(self, src):
-        for(key, value) in src.items():
-            self.d[key] = value
-        self.d['version'] = Version.version
-
-
-
-
