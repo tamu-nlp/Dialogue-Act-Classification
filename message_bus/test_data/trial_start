@@ -2,4 +2,4 @@
 
 # Author: Joseph Astier
 
-mosquitto_pub -t trial -f trial_start.json
+mosquitto_pub -t trial -f trial_start.metadata
