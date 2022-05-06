@@ -3,6 +3,7 @@ from heartbeat_publisher import HeartbeatPublisher
 import json
 from utils import Utils
 import datetime
+import re
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
@@ -17,9 +18,14 @@ class Publisher(Utils):
         print("Publisher connected to Message Bus. ")
         self.client.loop_start()
 
-    # add utc timestamps to common header and common msg
+    # UTC timezone formatted as ISO 8601: YYYY-MM-DDThh:mm:ss.ssssZ
     def set_timestamp(self, d):
-        timestamp = str(datetime.datetime.utcnow())
+        t = datetime.datetime.utcnow()
+        iso = t.isoformat(timespec='microseconds')
+        timestamp = str(iso) + 'Z'
+        pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.]?[0-9]{0,}?Z"
+
+
         d["header"]["timestamp"] = timestamp
         d["msg"]["timestamp"] = timestamp
 
