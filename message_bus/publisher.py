@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import json
 from utils import Utils
+from version_info_message import VersionInfoMessage
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
@@ -8,13 +9,12 @@ from utils import Utils
 class Publisher(Utils):
 
     def __init__(self, message_bus, host, port):
-        print("Publisher.__init__")
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.connect(host, port, 6000, "")
-        print("Publisher connected to Message Bus. ")
+        for pub in VersionInfoMessage.d["data"]["publishes"]:
+            print("  publishing on " + pub["topic"])
         self.client.loop_start()
-
 
     def publish(self, topic, d):
         # set timestamps on all published messages
@@ -22,8 +22,7 @@ class Publisher(Utils):
         d["header"]["timestamp"] = ts
         d["msg"]["timestamp"] = ts
 
-        print("Publisher.publish")
-        print("  topic : " + topic)
-        print("  message : " + json.dumps(d, indent=2))
+#        print("Publisher.publish")
+#        print("  topic : " + topic)
+#        print("  message : " + json.dumps(d, indent=2))
         self.client.publish(topic, json.dumps(d))
-

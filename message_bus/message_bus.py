@@ -9,7 +9,8 @@ import json
 class MessageBus():
 
     def __init__(self, host, port):
-        print("MessageBus.__init__")
+        p = str(port)
+        print("TDAC connecting to Message Bus at " + host + ":" + p + " ...")
         self.publisher = Publisher(self, host, port)
         self.heartbeat_publisher = HeartbeatPublisher(self)
         # blocking call 

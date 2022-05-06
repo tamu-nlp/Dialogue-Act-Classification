@@ -15,12 +15,7 @@ class HeartbeatPublisher:
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
-        print("HeartbeatPublisher.publish_heartbeat")
         self.message_bus.publish(self.hbm.topic, self.d)
-
-    # Create a heartbeat message and send it off for publishing
-    def foo_heartbeat(self):
-        print("HeartbeatPublisher.foo_heartbeat")
 
     # trigger heartbeats on a preset interval
     def pulse(self, phony):
@@ -30,7 +25,6 @@ class HeartbeatPublisher:
 
     # Start the pulse in a seperate thread so MQTT clients are not blocked
     def __init__(self, message_bus):
-        print("HeartbeatPublisher.__init__(self, message_bus)")
         self.message_bus = message_bus
         # send a heartbeat as soon as possible
         self.publish_heartbeat()
@@ -40,7 +34,6 @@ class HeartbeatPublisher:
 
     # When a trial starts we must incude the trial_id field from the trial msg
     def on_trial_message(self, trial_message_dict):
-        print("HeartbeatPublisher.on_trial_message")
         self.d = self.hbm.from_trial_message(trial_message_dict)
         # send one right away on any trial message
         self.publish_heartbeat()

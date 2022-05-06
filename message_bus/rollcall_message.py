@@ -1,7 +1,7 @@
 from common import CommonHeader
 import json
 
-#// published Rollcall response message
+# published Rollcall response message
 #RollcallResponse {
 #  topic = "agent/control/rollcall/response"
 #  header {
@@ -15,6 +15,18 @@ import json
 #    status = "up"
 #  }
 #}
+# 
+#  subscribed Rollcall request message
+# RollcallRequest {
+#   topic = "agent/control/rollcall/request"
+#   header {
+#     message_type = "agent"
+#   }
+#   msg {
+#     sub_type = "rollcall:request"
+#   }
+# }
+
 
 class RollcallResponse:
     pub_topic = "dialogue_act_classfier/heartbeat"

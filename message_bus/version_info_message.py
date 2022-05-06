@@ -22,28 +22,28 @@ from version import Version
 
 
 class VersionInfoMessage (Utils):
-    topic = "agent/tomcat_textAnalyzer/versioninfo"
+    topic = "agent/uaz_tdac/versioninfo"
     d = {
         "data": {
-            "agent_name": "uaz_dialog_agent",
+            "agent_name": "uaz_tdac_agent",
 #            "config": [],
 #            "dependencies": [],
             "owner": "University of Arizona",
             "publishes": [
                 {
+                    "topic": "agent/uaz_tdac",
                     "message_type": "event",
-                    "sub_type": "Event:dialogue_event",
-                    "topic": "agent/dialog"
+                    "sub_type": "Event:tdac_event"
                 },
                 {
+                    "topic": "agent/uaz_tdac/versioninfo",
                     "message_type": "agent",
-                    "sub_type": "versioninfo",
-                    "topic": "agent/tomcat_textAnalyzer/versioninfo"
+                    "sub_type": "versioninfo"
                 },
                 {
+                    "topic": "agent/uaz_tdac/heartbeats",
                     "message_type": "status",
-                    "sub_type": "heartbeat",
-                    "topic": "agent/uaz_dialog_agent/heartbeats"
+                    "sub_type": "heartbeat"
                 }
             ],
             "source": [
@@ -53,24 +53,19 @@ class VersionInfoMessage (Utils):
             ],
             "subscribes": [
                 {
+                    "topic": "trial",
                     "message_type": "trial",
-                    "sub_type": "start",
-                    "topic": "trial"
+                    "sub_type": "start"
                 },
                 {
+                    "topic": "trial",
                     "message_type": "trial",
-                    "sub_type": "stop",
-                    "topic": "trial"
+                    "sub_type": "stop"
                 },
                 {
+                    "topic": "agent/asr/final",
                     "message_type": "observation",
-                    "sub_type": "asr:transcription",
-                    "topic": "agent/asr/final"
-                },
-                {
-                    "message_type": "chat",
-                    "sub_type": "Event:Chat",
-                    "topic": "minecraft/chat"
+                    "sub_type": "asr:transcription"
                 }
             ],
             "version": Version.version
