@@ -3,7 +3,7 @@ from utils import Utils
 from version import Version 
 
 
-##// published Version Info message
+##// published Version Info message as published by Dialog Agent
 #VersionInfo{
 #  testbed = "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent"
 #  topic = "agent/tomcat_textAnalyzer/versioninfo"
@@ -26,8 +26,8 @@ class VersionInfoMessage (Utils):
     d = {
         "data": {
             "agent_name": "uaz_dialog_agent",
-            "config": [],
-            "dependencies": [],
+#            "config": [],
+#            "dependencies": [],
             "owner": "University of Arizona",
             "publishes": [
                 {
@@ -47,7 +47,9 @@ class VersionInfoMessage (Utils):
                 }
             ],
             "source": [
-                "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent:4.1.4"
+                "https://gitlab.asist.aptima.com:5050/asist/testbed/"
+                + "uaz_tdac_agent:"
+                + Version.version
             ],
             "subscribes": [
                 {
