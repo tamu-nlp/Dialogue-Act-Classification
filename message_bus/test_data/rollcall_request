@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+mosquitto_pub -t "agent/control/rollcall/request" -f rollcall_request.metadata
