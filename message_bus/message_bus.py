@@ -4,29 +4,48 @@ from heartbeat_publisher import HeartbeatPublisher
 from version_info_message import VersionInfoMessage
 import time
 import json
+from utils import Utils
+from version import Version
 
 # Coordinator class for all things Message Bus
-class MessageBus():
+class MessageBus(Utils):
+
+    # shown on startup splash
+    name = "TDAC"
+
+    # messages handled
+    message_count = 0
 
     def __init__(self, host, port):
-        p = str(port)
-        print("TDAC connecting to Message Bus at " + host + ":" + p + " ...")
+        print(self.name + " is connecting to Message Bus...")
+        self.mqtt_url = "tcp://" + host + ":" + str(port)
         self.publisher = Publisher(self, host, port)
-        self.heartbeat_publisher = HeartbeatPublisher(self)
-        # blocking call 
         self.subscriber = Subscriber(self, host, port)
 
-    def on_message(self, topic, message_d):
+    # subscriber has successfully connected to the MQTT broker
+    def on_subscriber_connect(self):
+        self.heartbeat_publisher = HeartbeatPublisher(self)
+        print("Connected to Message Bus at " + self.mqtt_url)
+        print(self.name + " version " + Version.version + " running.")
+
+    # send message to handler
+    def dispatch_message(self, topic, message_d):
+        self.message_count += 1
+        preamble = "Message " + str(self.message_count) + ": "
         if(topic == "trial"):
-            self.heartbeat_publisher.on_trial_message(message_d)
             trial_sub_type = message_d["msg"]["sub_type"]
             if(trial_sub_type == "start"):
+                print(preamble + "trial [start]")
+                self.heartbeat_publisher.on_trial_message(message_d)
                 version_info_msg = VersionInfoMessage(message_d)
                 self.publish(version_info_msg.topic, version_info_msg.d)
+            elif(trial_sub_type == "stop"):
+                print(preamble + "trial [stop]")
+                self.heartbeat_publisher.on_trial_message(message_d)
         elif(topic == "agent/control/rollcall/request"):
-            pass
+            print(preamble + topic)
         elif(topic == "agent/asr/final"):
-            pass
+            print(preamble + topic)
 
     def publish(self, topic, message_d):
         self.publisher.publish(topic, message_d)
