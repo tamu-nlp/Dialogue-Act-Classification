@@ -3,7 +3,7 @@ from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from version_info_message import VersionInfoMessage
 from rollcall_response_message import RollcallResponseMessage
-from rollcall_request_message import RollcallRequestMessage
+from rollcall_request_message_handler import RollcallRequestMessageHandler
 import time
 import json
 from utils import Utils
@@ -20,7 +20,8 @@ class MessageBus(Utils):
 
     def __init__(self, host, port):
         # init message handlers
-        self.rollcall_request_message = RollcallRequestMessage(self)
+        self.rollcall_request_message_handler = \
+            RollcallRequestMessageHandler(self)
 
         # connect to the Message Bus
         print(self.name + " is connecting to Message Bus...")
@@ -36,7 +37,7 @@ class MessageBus(Utils):
 
     
     def foo(self, message_d):
-        self.rollcall_request_message.on_message(message_d)
+        self.rollcall_request_message_handler.on_message(message_d)
 
     # send message to handler
     def dispatch_message(self, topic, message_d):
@@ -57,3 +58,6 @@ class MessageBus(Utils):
 
     def publish(self, topic, message_d):
         self.publisher.publish(topic, message_d)
+
+    def publish(self, message_d):
+        self.publisher.publish(message_d)

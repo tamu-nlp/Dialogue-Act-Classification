@@ -37,7 +37,7 @@ class VersionInfoMessage (Utils):
                     "sub_type": "Event:tdac_event"
                 },
                 {
-                    "topic": RollcallResponseMessage.topic,
+                    "topic": RollcallResponseMessage.d["topic"],
                     "message_type": RollcallResponseMessage.d["header"]["message_type"],
                     "sub_type": RollcallResponseMessage.d["msg"]["sub_type"],
                 },

@@ -27,4 +27,19 @@ class Publisher(Utils):
         if(True):
             print("Published: " + topic)
             if(False):
-                print("  message : " + json.dumps(d, indent=2))
+                print(json.dumps(d, indent=2))
+
+    def publish(self, d):
+        # set timestamps on all published messages
+        topic = d["topic"]
+        del d["topic"]
+        ts = self.timestamp()
+        d["header"]["timestamp"] = ts
+        d["msg"]["timestamp"] = ts
+        self.client.publish(topic, json.dumps(d))
+
+        # set booleans for realtime publication logging
+        if(True):
+            print("Published: " + topic)
+            if(True):
+                print(json.dumps(d, indent=2))

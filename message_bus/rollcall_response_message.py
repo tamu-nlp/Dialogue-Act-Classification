@@ -32,9 +32,9 @@ import json
 
 
 class RollcallResponseMessage(Utils):
-    topic = "agent/control/rollcall/response"
 
     d = {
+        "topic" : "agent/control/rollcall/response",
         "data": {
             "status": "up"
         },
@@ -53,7 +53,7 @@ class RollcallResponseMessage(Utils):
     }
 
 
-    def from_message(self, message_d):
+    def __init__(self, message_d):
 
         # update common header
         src = message_d["header"]
