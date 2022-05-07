@@ -11,11 +11,11 @@ import message_bus
 class HeartbeatPublisher:
     heartbeat_interval_seconds = 0 # set > 0 to for regular heartbeats
     hbm = HeartbeatMessage()
-    d = hbm.d
+    d = hbm.no_message()
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
-        self.message_bus.publish(self.hbm.topic, self.d)
+        self.message_bus.publish(self.d)
 
     # trigger heartbeats on a preset interval
     def pulse(self, phony):
@@ -42,7 +42,7 @@ class HeartbeatPublisher:
             print(splash_msg + " (Scheduled heartbeats suppressed)")
 
     # When a trial starts we must incude the trial_id field from the trial msg
-    def on_trial_message(self, trial_message_dict):
-        self.d = self.hbm.from_trial_message(trial_message_dict)
+    def on_message(self, message_d):
+        self.d = self.hbm.from_message(message_d)
         # send one right away on any trial message
         self.publish_heartbeat()

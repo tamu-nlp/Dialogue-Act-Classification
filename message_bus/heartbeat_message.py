@@ -1,54 +1,54 @@
 from version import Version
 from utils import Utils
-import json
-
 
 class HeartbeatMessage(Utils):
     topic = "agent/dialogue_act_classfier/heartbeat"
     message_type = "status"
     sub_type = "heartbeat"
 
-    # Default dictionary before any messages have been read from the bus
-    d = {
-        "data" : {
-            "state" : "ok",
-            "active" : True,
-            "status" : "I am processing messages"
-        },
-        "header" : {
-            "message_type" : "status",
-            "timestamp" : "not_set",
-            "version" : "not_set"
-        },
-        "msg" : {
-            "experiment_id" : "not_set",
-            "source" : "uaz_tdac_agent",
-            "sub_type": "heartbeat",
-            "timestamp" : "not_set",
-            "version": Version.version
+    # default values
+    def no_message(self):
+        d = {
+            "topic" : self.topic,
+            "data" : {
+                "state" : "ok",
+                "active" : True,
+                "status" : "I am processing messages"
+            },
+            "header" : {
+                "message_type" : self.message_type,
+                "version" : "not_set"
+            },
+            "msg" : {
+                "source" : "uaz_tdac_agent",
+                "sub_type": self.sub_type,
+                "version": Version.version
+            }
         }
-    }
+
+        return d
 
     # Set dictionary values from trial message dictionary
-    # @param message_d A Trial Message dicationary
-    def from_trial_message(self, message_d):
+    def from_message(self, message_d):
 
-        # update common header
-        src = message_d["header"]
-        dst = self.d["header"]
-        self.update_field(src, dst, "version")
+        d = {
+            "topic" : self.topic,
+            "data" : {
+                "state" : "ok",
+                "active" : True,
+                "status" : "I am processing messages"
+            },
+            "header" : {
+                "message_type" : self.message_type,
+                "version" : message_d["header"]["version"]
+            },
+            "msg" : {
+                "source" : "uaz_tdac_agent",
+                "sub_type": self.sub_type,
+                "version": Version.version
+            }
+        }
 
-        # update common msg
-        src = message_d["msg"]
-        dst = self.d["msg"]
-        self.update_field(src, dst, "experiment_id")
-        self.update_field(src, dst, "replay_parent_type")
-        self.update_field(src, dst, "replay_id")
-        self.update_field(src, dst, "replay_parent_id")
+        self.update_common_msg(message_d, d)
 
-        if("trial_id") in src:
-            self.update_field(src, dst, "trial_id")
-        elif("trial_id" in dst):
-            del dst["trial_id"]
-
-        return self.d
+        return d

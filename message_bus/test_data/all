@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+./trial_start
+./rollcall_request
+./trial_stop

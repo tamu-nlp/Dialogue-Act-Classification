@@ -5,10 +5,21 @@ class Utils:
 
     # copy a dictionary field that may not exist
     def update_field(self, src, dst, key):
+        if(key in dst):
+            del dst[key]
         if(key in src):
             value = src[key]
             if(value != None):
                 dst.update({key:value})
+
+    def update_common_msg(self, src_d, dst_d):
+        src = src_d["msg"]
+        dst = dst_d["msg"]
+        self.update_field(src, dst, "experiment_id")
+        self.update_field(src, dst, "replay_parent_type")
+        self.update_field(src, dst, "replay_id")
+        self.update_field(src, dst, "replay_parent_id")
+        self.update_field(src, dst, "trial_id")
 
     # return a UTC timestamp in format:  YYYY-MM-DDThh:mm:ss.ssssZ
     def timestamp(self):
@@ -33,6 +44,11 @@ class Utils:
         return ((d1["topic"] == d2["topic"])
         and (d1["header"]["message_type"] == d2["header"]["message_type"])
         and (d1["msg"]["sub_type"] == d2["msg"]["sub_type"]))
+
+    def is_subscribed(self, d, topic, message_type, sub_type):
+        return ((d["topic"] == topic)
+        and (d["header"]["message_type"] == message_type)
+        and (d["msg"]["sub_type"] == sub_type))
 
 
         

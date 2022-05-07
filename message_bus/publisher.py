@@ -12,30 +12,21 @@ class Publisher(Utils):
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.connect(host, port, 6000, "")
-        for topic in self.topics(VersionInfoMessage.d["data"]["publishes"]):
+        for topic in self.topics(VersionInfoMessage.data["publishes"]):
             print("Publishing on: " + topic)
         self.client.loop_start()
 
-    def publish(self, topic, d):
-        # set timestamps on all published messages
-        ts = self.timestamp()
-        d["header"]["timestamp"] = ts
-        d["msg"]["timestamp"] = ts
-        self.client.publish(topic, json.dumps(d))
-
-        # set booleans for realtime publication logging
-        if(True):
-            print("Published: " + topic)
-            if(False):
-                print(json.dumps(d, indent=2))
-
     def publish(self, d):
-        # set timestamps on all published messages
+        # do not publish the topic
         topic = d["topic"]
-        del d["topic"]
+        del d["topic"] 
+
+        # set timestamps
         ts = self.timestamp()
-        d["header"]["timestamp"] = ts
-        d["msg"]["timestamp"] = ts
+        d["header"].update({"timestamp": ts})
+        d["msg"].update({"timestamp": ts})
+
+        # ship it
         self.client.publish(topic, json.dumps(d))
 
         # set booleans for realtime publication logging

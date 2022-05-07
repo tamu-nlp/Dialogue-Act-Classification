@@ -6,10 +6,6 @@ from version_info_message import VersionInfoMessage
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
-# This class receives messages on subscribed topics and sends them
-# to the MessageBus owning class as dictionaries for further processing
-
-# Constantly looping MQTT client
 class Subscriber(Utils):
 
     # Subscribing in on_connect() means that if we lose the connection and
@@ -18,8 +14,7 @@ class Subscriber(Utils):
 
         # Paho return code definitions
         if(rc == 0):
-            d = VersionInfoMessage.d
-            for topic in self.topics(d["data"]["subscribes"]):
+            for topic in self.topics(VersionInfoMessage.data["subscribes"]):
                 self.client.subscribe(topic)
                 print("Subscribed to: " + topic)
             self.message_bus.on_subscriber_connect()
@@ -36,23 +31,20 @@ class Subscriber(Utils):
         else:
             print("Connection refused - return code " + str(rc))
 
-    # Return a dictionary composed from a Message Bus message
-    def d_from_message(self, msg):
+    # The callback when a message arrives on a subscribed topic
+    def on_message(self, client, userdata, msg):
+        # clean payload of extra characters
         payload = str(msg.payload.decode("utf-8"))
         l_brace = payload.find("{")
         r_brace = payload.rfind("}")+1
-        clean_json_txt = payload[l_brace : r_brace] 
-        message_d = json.loads(clean_json_txt)
-        return message_d
 
-    # The callback when a message arrives on a subscribed topic
-    def on_message(self, client, userdata, msg):
-        d = self.d_from_message(msg)
-        d.update({"topic": msg.topic})
-        self.message_bus.dispatch_message(msg.topic, d)
+        # create json message dictionary and add topic
+        serialized_json = payload[l_brace : r_brace] 
+        message_d = json.loads(serialized_json)
+        message_d.update({"topic": msg.topic})
 
-        # the new way
-        self.message_bus.foo(d)
+        # send to message_bus coordinator for dispatching
+        self.message_bus.on_message(message_d)
 
     def __init__(self, message_bus, host, port):
         self.message_bus = message_bus

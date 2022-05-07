@@ -2,7 +2,8 @@ from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from version_info_message import VersionInfoMessage
-from rollcall_response_message import RollcallResponseMessage
+from trial_start_message_handler import TrialStartMessageHandler
+from trial_stop_message_handler import TrialStopMessageHandler
 from rollcall_request_message_handler import RollcallRequestMessageHandler
 import time
 import json
@@ -22,6 +23,10 @@ class MessageBus(Utils):
         # init message handlers
         self.rollcall_request_message_handler = \
             RollcallRequestMessageHandler(self)
+        self.trial_start_message_handler = \
+            TrialStartMessageHandler(self)
+        self.trial_stop_message_handler = \
+            TrialStopMessageHandler(self)
 
         # connect to the Message Bus
         print(self.name + " is connecting to Message Bus...")
@@ -34,30 +39,12 @@ class MessageBus(Utils):
         self.heartbeat_publisher = HeartbeatPublisher(self)
         print("Connected to Message Bus at " + self.mqtt_url)
         print(self.name + " version " + Version.version + " running.")
-
     
-    def foo(self, message_d):
+    # handle incoming message
+    def on_message(self, message_d):
         self.rollcall_request_message_handler.on_message(message_d)
-
-    # send message to handler
-    def dispatch_message(self, topic, message_d):
-        self.message_count += 1
-        preamble = "Message " + str(self.message_count) + ": "
-        if(topic == "trial"):
-            trial_sub_type = message_d["msg"]["sub_type"]
-            if(trial_sub_type == "start"):
-                print(preamble + "trial [start]")
-                self.heartbeat_publisher.on_trial_message(message_d)
-                version_info_msg = VersionInfoMessage(message_d)
-                self.publish(version_info_msg.topic, version_info_msg.d)
-            elif(trial_sub_type == "stop"):
-                print(preamble + "trial [stop]")
-                self.heartbeat_publisher.on_trial_message(message_d)
-        elif(topic == "agent/asr/final"):
-            print(preamble + topic)
-
-    def publish(self, topic, message_d):
-        self.publisher.publish(topic, message_d)
+        self.trial_start_message_handler.on_message(message_d)
+        self.trial_stop_message_handler.on_message(message_d)
 
     def publish(self, message_d):
         self.publisher.publish(message_d)
