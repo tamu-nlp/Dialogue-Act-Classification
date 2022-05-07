@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import json
 from version import Version
+from utils import Utils
 from version_info_message import VersionInfoMessage
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
@@ -9,11 +10,7 @@ from version_info_message import VersionInfoMessage
 # to the MessageBus owning class as dictionaries for further processing
 
 # Constantly looping MQTT client
-class Subscriber:
-
-    def subscribe_to(self, client, sub):
-        client.subscribe(sub["topic"])
-        print("  subscribed to " + sub["topic"] + " [" + sub["sub_type"] + "]")
+class Subscriber(Utils):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -21,9 +18,11 @@ class Subscriber:
 
         # Paho return code definitions
         if(rc == 0):
-            for sub in VersionInfoMessage.d["data"]["subscribes"]:
-                self.subscribe_to(client, sub)
-            print("TDAC version " + Version.version + " is running.")
+            d = VersionInfoMessage.d
+            for topic in self.topics(d["data"]["subscribes"]):
+                self.client.subscribe(topic)
+                print("Subscribed to: " + topic)
+            self.message_bus.on_subscriber_connect()
         elif(rc == 1):
             print("Connection refused - incorrect protocol version")
         elif(rc == 2):
@@ -48,8 +47,8 @@ class Subscriber:
 
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
-        message_d = self.d_from_message(msg)
-        self.message_bus.on_message(msg.topic, message_d)
+        d = self.d_from_message(msg)
+        self.message_bus.dispatch_message(msg.topic, d)
 
     def __init__(self, message_bus, host, port):
         self.message_bus = message_bus
