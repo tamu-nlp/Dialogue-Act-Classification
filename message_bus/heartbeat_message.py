@@ -4,7 +4,10 @@ import json
 
 
 class HeartbeatMessage(Utils):
-    topic = "dialogue_act_classfier/heartbeat"
+    topic = "agent/dialogue_act_classfier/heartbeat"
+    message_type = "status"
+    sub_type = "heartbeat"
+
     # Default dictionary before any messages have been read from the bus
     d = {
         "data" : {
