@@ -2,6 +2,8 @@ from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from version_info_message import VersionInfoMessage
+from rollcall_response_message import RollcallResponseMessage
+from rollcall_request_message import RollcallRequestMessage
 import time
 import json
 from utils import Utils
@@ -17,6 +19,10 @@ class MessageBus(Utils):
     message_count = 0
 
     def __init__(self, host, port):
+        # init message handlers
+        self.rollcall_request_message = RollcallRequestMessage(self)
+
+        # connect to the Message Bus
         print(self.name + " is connecting to Message Bus...")
         self.mqtt_url = "tcp://" + host + ":" + str(port)
         self.publisher = Publisher(self, host, port)
@@ -27,6 +33,10 @@ class MessageBus(Utils):
         self.heartbeat_publisher = HeartbeatPublisher(self)
         print("Connected to Message Bus at " + self.mqtt_url)
         print(self.name + " version " + Version.version + " running.")
+
+    
+    def foo(self, message_d):
+        self.rollcall_request_message.on_message(message_d)
 
     # send message to handler
     def dispatch_message(self, topic, message_d):
@@ -42,8 +52,6 @@ class MessageBus(Utils):
             elif(trial_sub_type == "stop"):
                 print(preamble + "trial [stop]")
                 self.heartbeat_publisher.on_trial_message(message_d)
-        elif(topic == "agent/control/rollcall/request"):
-            print(preamble + topic)
         elif(topic == "agent/asr/final"):
             print(preamble + topic)
 

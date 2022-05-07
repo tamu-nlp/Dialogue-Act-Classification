@@ -27,3 +27,12 @@ class Utils:
         for t in d: 
             f.append(t["topic"])
         return set(f)
+
+    # return true if the messages have the same subscription fields
+    def is_subscribed(self, d1, d2):
+        return ((d1["topic"] == d2["topic"])
+        and (d1["header"]["message_type"] == d2["header"]["message_type"])
+        and (d1["msg"]["sub_type"] == d2["msg"]["sub_type"]))
+
+
+        

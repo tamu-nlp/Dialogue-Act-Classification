@@ -3,6 +3,7 @@ from utils import Utils
 from version import Version 
 
 from heartbeat_message import HeartbeatMessage
+from rollcall_response_message import RollcallResponseMessage
 
 ##// published Version Info message as published by Dialog Agent
 #VersionInfo{
@@ -23,9 +24,6 @@ from heartbeat_message import HeartbeatMessage
 
 
 class VersionInfoMessage (Utils):
-    topic = "agent/uaz_tdac/versioninfo"
-    message_type = "agent"
-    sub_type = "versioninfo"
     d = {
         "data": {
             "agent_name": "uaz_tdac_agent",
@@ -39,14 +37,14 @@ class VersionInfoMessage (Utils):
                     "sub_type": "Event:tdac_event"
                 },
                 {
-                    "topic": RollcallResponse.topic,
-                    "message_type": RollcallResponse.message_type,
-                    "sub_type": RollcallResponse.sub_type
+                    "topic": RollcallResponseMessage.topic,
+                    "message_type": RollcallResponseMessage.d["header"]["message_type"],
+                    "sub_type": RollcallResponseMessage.d["msg"]["sub_type"],
                 },
                 {
-                    "topic": topic,
-                    "message_type": message_type,
-                    "sub_type": sub_type
+                    "topic": "agent/uaz_tdac/versioninfo",
+                    "message_type": "agent",
+                    "sub_type": "versioninfo"
                 },
                 {
                     "topic": HeartbeatMessage.topic,

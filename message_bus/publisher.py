@@ -13,7 +13,7 @@ class Publisher(Utils):
         self.client = mqtt.Client()
         self.client.connect(host, port, 6000, "")
         for topic in self.topics(VersionInfoMessage.d["data"]["publishes"]):
-            print("Publishing on:" + topic)
+            print("Publishing on: " + topic)
         self.client.loop_start()
 
     def publish(self, topic, d):

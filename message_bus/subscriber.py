@@ -48,7 +48,11 @@ class Subscriber(Utils):
     # The callback when a message arrives on a subscribed topic
     def on_message(self, client, userdata, msg):
         d = self.d_from_message(msg)
+        d.update({"topic": msg.topic})
         self.message_bus.dispatch_message(msg.topic, d)
+
+        # the new way
+        self.message_bus.foo(d)
 
     def __init__(self, message_bus, host, port):
         self.message_bus = message_bus
