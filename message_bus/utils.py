@@ -22,3 +22,8 @@ class Utils:
         else: 
             return m.group(0) + 'Z'
 
+    def topics(self, d):
+        f=[]
+        for t in d: 
+            f.append(t["topic"])
+        return set(f)
