@@ -29,16 +29,10 @@ import json
 
 
 class RollcallResponse:
-    pub_topic = "dialogue_act_classfier/heartbeat"
+    topic = "dialogue_act_classfier/heartbeat"
+    message_type = "agent"
+    sub_type = "rollcall:request"
 
     def message():
         return "tdac_rollcall_response_message"
 
-    def __init__(self, publisher):
-        self.publisher = publisher
-        print("Heartbeat.__init__")
-
-#        while(True):
-#            print("timed loop")
-#            self.publisher.publish("heartbeat", "The beat goes on")
-#            time.sleep(1)
