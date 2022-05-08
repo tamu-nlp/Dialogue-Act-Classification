@@ -17,20 +17,20 @@ class Publisher(Utils):
         self.client.loop_start()
 
     def publish(self, d):
-        # do not publish the topic
         topic = d["topic"]
-        del d["topic"] 
 
-        # set timestamps
-        ts = self.timestamp()
-        d["header"].update({"timestamp": ts})
-        d["msg"].update({"timestamp": ts})
+        # do not publish the topic
+        message_d = {
+            "data":d["data"],
+            "header": d["header"],
+            "msg" : d["msg"]
+        }
 
         # ship it
-        self.client.publish(topic, json.dumps(d))
+        self.client.publish(topic, json.dumps(message_d))
 
         # set booleans for realtime publication logging
         if(True):
             print("Published: " + topic)
-            if(True):
-                print(json.dumps(d, indent=2))
+        if(True):
+            print(json.dumps(d, indent=2))
