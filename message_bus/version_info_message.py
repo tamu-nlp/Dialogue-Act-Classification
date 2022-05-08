@@ -1,33 +1,13 @@
-import json
-from utils import Utils
+from message import Message
 from version import Version 
-
 from heartbeat_message import HeartbeatMessage
 from rollcall_response_message import RollcallResponseMessage
 
-##// published Version Info message as published by Dialog Agent
-#VersionInfo{
-#  testbed = "https://gitlab.asist.aptima.com:5050/asist/testbed/uaz_dialog_agent"
-#  topic = "agent/tomcat_textAnalyzer/versioninfo"
-#  header {
-#    message_type = "agent"
-#  }
-#  msg {
-#    sub_type = "versioninfo"
-#    source = "uaz_dialog_agent"
-#  }
-#  data {
-#    agent_name = "uaz_dialog_agent"
-#    owner = "University of Arizona"
-#  }
-#}
-
-
-class VersionInfoMessage (Utils):
+class VersionInfoMessage (Message):
     topic = "agent/uaz_tdac/versioninfo"
     message_type = "agent"
     sub_type = "versioninfo"
-
+    source = "uaz_tdac_agent",
     data = {
         "agent_name": "uaz_tdac_agent",
         "owner": "University of Arizona",
@@ -82,22 +62,3 @@ class VersionInfoMessage (Utils):
         ],
         "version": Version.version
     }
-
-    def on_message(self, message_d):
-        d = {
-            "topic" : self.topic,
-            "data" : self.data,
-            "header" : {
-                "message_type" : self.message_type,
-                "version" : message_d["header"]["version"]
-            },
-            "msg" : {
-                "source" : "uaz_tdac_agent",
-                "sub_type": self.sub_type,
-                "version": Version.version
-            }
-        }
-
-        self.update_common_msg(message_d, d)
-
-        return d
