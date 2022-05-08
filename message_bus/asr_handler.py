@@ -14,4 +14,4 @@ class AsrHandler(Message):
 
     def on_message(self, message_d):
         if(self.is_subscribed(message_d)):
-            self.message_bus.publish.self.tdac_message.get_d(message_d))
+            self.message_bus.publish.self.tdac_message.get_d(message_d)

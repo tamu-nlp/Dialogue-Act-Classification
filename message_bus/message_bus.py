@@ -1,12 +1,10 @@
 from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
-from version_info_message import VersionInfoMessage
 from trial_start_handler import TrialStartHandler
 from trial_stop_handler import TrialStopHandler
 from rollcall_request_handler import RollcallRequestHandler
-import time
-import json
+from asr_handler import AsrHandler
 from utils import Utils
 from version import Version
 
@@ -19,6 +17,7 @@ class MessageBus(Utils):
     def __init__(self, host, port):
         # init message handlers
         self.message_handlers = [
+            AsrHandler(self),
             RollcallRequestHandler(self),
             TrialStartHandler(self),
             TrialStopHandler(self)
