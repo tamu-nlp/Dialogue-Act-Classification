@@ -2,9 +2,9 @@ from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from version_info_message import VersionInfoMessage
-from trial_start_message_handler import TrialStartMessageHandler
-from trial_stop_message_handler import TrialStopMessageHandler
-from rollcall_request_message_handler import RollcallRequestMessageHandler
+from trial_start_handler import TrialStartHandler
+from trial_stop_handler import TrialStopHandler
+from rollcall_request_handler import RollcallRequestHandler
 import time
 import json
 from utils import Utils
@@ -16,17 +16,13 @@ class MessageBus(Utils):
     # shown on startup splash
     name = "TDAC"
 
-    # messages handled
-    message_count = 0
-
     def __init__(self, host, port):
         # init message handlers
-        self.rollcall_request_message_handler = \
-            RollcallRequestMessageHandler(self)
-        self.trial_start_message_handler = \
-            TrialStartMessageHandler(self)
-        self.trial_stop_message_handler = \
-            TrialStopMessageHandler(self)
+        self.message_handlers = [
+            RollcallRequestHandler(self),
+            TrialStartHandler(self),
+            TrialStopHandler(self)
+        ]
 
         # connect to the Message Bus
         print(self.name + " is connecting to Message Bus...")
@@ -42,9 +38,8 @@ class MessageBus(Utils):
     
     # handle incoming message
     def on_message(self, message_d):
-        self.rollcall_request_message_handler.on_message(message_d)
-        self.trial_start_message_handler.on_message(message_d)
-        self.trial_stop_message_handler.on_message(message_d)
+        for handler in self.message_handlers:
+            handler.on_message(message_d)
 
     def publish(self, message_d):
         self.publisher.publish(message_d)
