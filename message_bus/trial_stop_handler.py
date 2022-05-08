@@ -3,7 +3,7 @@ from utils import Utils
 import json
 
 # handle trial stop message
-class TrialStopMessageHandler(Utils):
+class TrialStopHandler(Utils):
     topic = "trial"
     message_type = "trial"
     sub_type = "stop"
@@ -15,4 +15,4 @@ class TrialStopMessageHandler(Utils):
         if(self.is_subscribed(
                 message_d,
                 self.topic, self.message_type, self.sub_type)):
-            self.message_bus.heartbeat_publisher.on_message(message_d)
+            self.message_bus.heartbeat_publisher.on_trial_stop(message_d)
