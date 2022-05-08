@@ -9,9 +9,9 @@ import message_bus
 # seperate thread that does not block the MQTT clients 
 
 class HeartbeatPublisher:
-    heartbeat_interval_seconds = 0 # set > 0 to for regular heartbeats
-    hbm = HeartbeatMessage()
-    d = hbm.no_message()
+    heartbeat_interval_seconds = 10 # set > 0 to for regular heartbeats
+    heartbeat_message = HeartbeatMessage()
+    d = heartbeat_message.get_default_d()
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
@@ -42,7 +42,7 @@ class HeartbeatPublisher:
             print(splash_msg + " (Scheduled heartbeats suppressed)")
 
     # When a trial starts we must incude the trial_id field from the trial msg
-    def on_message(self, message_d):
-        self.d = self.hbm.from_message(message_d)
+    def set_trial_message(self, message_d):
+        self.d = heartbeat_message.get_d(message_d)
         # send one right away on any trial message
         self.publish_heartbeat()
