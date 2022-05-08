@@ -8,6 +8,9 @@ from version_info_message import VersionInfoMessage
 
 class Subscriber(Utils):
 
+    # messages handled
+    message_count = 0
+
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     def on_connect(self, client, userdata, flags, rc):
@@ -42,6 +45,10 @@ class Subscriber(Utils):
         serialized_json = payload[l_brace : r_brace] 
         message_d = json.loads(serialized_json)
         message_d.update({"topic": msg.topic})
+
+        # report the traffic
+        self.message_count += 1
+        print("message " + str(self.message_count) + ": " + msg.topic)
 
         # send to message_bus coordinator for dispatching
         self.message_bus.on_message(message_d)
