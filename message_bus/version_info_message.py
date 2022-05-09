@@ -19,22 +19,22 @@ class VersionInfoMessage (Message):
         }
         return d
 
-    topic = "agent/uaz_tdac/versioninfo"
+    topic = "agent/uaz_tdac_agent/versioninfo"
     message_type = "agent"
     sub_type = "versioninfo"
     source = "uaz_tdac_agent"
     data = {
-        "agent_name": "uaz_tdac_agent",
+        "agent_name": source,
         "owner": "University of Arizona",
         "publishes": [
-            message_info(TdacMessage),
-            message_info(RollcallResponseMessage),
-            message_info(HeartbeatMessage),
             {
                 "topic": topic,
                 "message_type": message_type,
                 "sub_type": sub_type
-            }
+            },
+            message_info(TdacMessage),
+            message_info(RollcallResponseMessage),
+            message_info(HeartbeatMessage)
         ],
         "source": [
             "https://gitlab.asist.aptima.com:5050/asist/testbed/"

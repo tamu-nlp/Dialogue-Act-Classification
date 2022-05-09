@@ -1,3 +1,4 @@
+import sys
 from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
