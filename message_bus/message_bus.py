@@ -15,7 +15,9 @@ class MessageBus(Utils):
     # shown on startup splash
     name = "TDAC"
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, dac_server):
+        self.dac_server = dac_server
+
         # init message handlers
         self.message_handlers = [
             AsrHandler(self),

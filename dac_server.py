@@ -20,12 +20,6 @@ MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
 
 
-# MQTT broker network location
-mqtt_host = "localhost"
-mqtt_port = 1883
-# Message Bus with MQTT
-message_bus = MessageBus(mqtt_host, mqtt_port)
-
 class DialogAgentMessage(BaseModel):
     """Data model for incoming message from UAZ Dialog Agent"""
 
@@ -41,11 +35,16 @@ class ClassificationMessage(BaseModel):
     classification: str
 
 # Create the server instance
-#class TdacServer:
-#
-#    def __init__(self):
-#        print("TDAC server init")
-#        self.message_bus = MessageBus(self)
+
+# MQTT broker network location
+class TdacServer:
+    mqtt_host = "localhost"
+    mqtt_port = 1883
+
+    def __init__(self):
+        print("TDAC server init")
+        self.message_bus = MessageBus(self.mqtt_host, self.mqtt_port, self)
 
 
+tdac_server = TdacServer()
 
