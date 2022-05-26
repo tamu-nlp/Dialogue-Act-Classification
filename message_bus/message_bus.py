@@ -2,10 +2,10 @@ import sys
 from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
-from trial_start_handler import TrialStartHandler
-from trial_stop_handler import TrialStopHandler
-from rollcall_request_handler import RollcallRequestHandler
-from asr_handler import AsrHandler
+from message_handlers import TrialStartMessageHandler
+from message_handlers import TrialStopMessageHandler
+from message_handlers import RollcallRequestMessageHandler
+from message_handlers import AsrMessageHandler
 from utils import Utils
 from version import Version
 
@@ -20,10 +20,10 @@ class MessageBus(Utils):
 
         # init message handlers
         self.message_handlers = [
-            AsrHandler(self),
-            RollcallRequestHandler(self),
-            TrialStartHandler(self),
-            TrialStopHandler(self)
+            AsrMessageHandler(self),
+            RollcallRequestMessageHandler(self),
+            TrialStartMessageHandler(self),
+            TrialStopMessageHandler(self)
         ]
 
         # connect to the Message Bus

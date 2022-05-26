@@ -1,11 +1,11 @@
-from asr_handler import AsrHandler
+from message_handlers import AsrMessageHandler
 from heartbeat_message import HeartbeatMessage
 from message import Message
-from rollcall_request_handler import RollcallRequestHandler
+from message_handlers import RollcallRequestMessageHandler
 from rollcall_response_message import RollcallResponseMessage
 from tdac_message import TdacMessage
-from trial_start_handler import TrialStartHandler
-from trial_stop_handler import TrialStopHandler
+from message_handlers import TrialStartMessageHandler
+from message_handlers import TrialStopMessageHandler
 from version import Version
 
 class VersionInfoMessage (Message):
@@ -42,10 +42,10 @@ class VersionInfoMessage (Message):
             + Version.version
         ],
         "subscribes": [
-            message_info(AsrHandler),
-            message_info(RollcallRequestHandler),
-            message_info(TrialStartHandler),
-            message_info(TrialStopHandler)
+            message_info(AsrMessageHandler),
+            message_info(RollcallRequestMessageHandler),
+            message_info(TrialStartMessageHandler),
+            message_info(TrialStopMessageHandler)
         ],
         "version": Version.version
     }
