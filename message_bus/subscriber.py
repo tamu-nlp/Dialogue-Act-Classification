@@ -48,7 +48,7 @@ class Subscriber(Utils):
 
         # report the traffic
         self.message_count += 1
-        print("message " + str(self.message_count) + ": " + msg.topic)
+        print(f'message {self.message_count}: {msg.topic}')
 
         # send to message_bus coordinator for dispatching
         self.message_bus.on_message(message_d)
