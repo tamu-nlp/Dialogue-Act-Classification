@@ -12,15 +12,6 @@ class Utils:
             if(value != None):
                 dst.update({key:value})
 
-    def update_common_msg(self, src_d, dst_d):
-        src = src_d["msg"]
-        dst = dst_d["msg"]
-        self.update_field(src, dst, "experiment_id")
-        self.update_field(src, dst, "replay_parent_type")
-        self.update_field(src, dst, "replay_id")
-        self.update_field(src, dst, "replay_parent_id")
-        self.update_field(src, dst, "trial_id")
-
     # return a UTC timestamp in format:  YYYY-MM-DDThh:mm:ss.ssssZ
     def timestamp(self):
         tm = datetime.datetime.utcnow()
@@ -49,6 +40,3 @@ class Utils:
         return ((d["topic"] == topic)
         and (d["header"]["message_type"] == message_type)
         and (d["msg"]["sub_type"] == sub_type))
-
-
-        
