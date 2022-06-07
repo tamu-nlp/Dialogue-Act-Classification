@@ -38,13 +38,21 @@ class ClassificationMessage(BaseModel):
 
 # MQTT broker network location
 class TdacServer:
-    mqtt_host = "localhost"
+    mqtt_host = 'localhost'
     mqtt_port = 1883
 
     def __init__(self):
-        print("TDAC server init")
-        self.message_bus = MessageBus(self.mqtt_host, self.mqtt_port, self)
+        print('TDAC server init')
+        self.message_bus = MessageBus(self, self.mqtt_host, self.mqtt_port)
+
+    # The model should reset before and after each mission.
+    def reset_model(self):
+        PREDICTOR.reset_model()
+
+    # 
+    def classify_utterance(self, participant_id, text):
+        classification = PREDICTOR.predict(f"{participant_id}:{text}")
+        return classification
 
 
 tdac_server = TdacServer()
-
