@@ -34,13 +34,13 @@ class MessageBus(Utils):
 
     # subscriber has successfully connected to the MQTT broker
     def on_subscriber_connect(self):
-        self.heartbeat_publisher = HeartbeatPublisher(self)
         print("Connected to Message Bus at " + self.mqtt_url)
         print(self.name + " version " + Version.version + " running.")
+        self.heartbeat_publisher = HeartbeatPublisher(self)
 
-    # run a classification on ASR
+    # publish a classification message based on the input text
     def classify_utterance(self, participant_id, text):
-        self.dac_server.classify_utterance(participant_id, text)
+        return self.dac_server.classify_utterance(participant_id, text)
 
     # reset the model on trial start and stop
     def reset_model(self):

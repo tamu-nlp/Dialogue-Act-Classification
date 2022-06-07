@@ -8,4 +8,5 @@ class TdacMessage(Message):
     source = "uaz_tdac_agent"
     data = {
         "label" : "not_set",
+        "asr_msg_id" : "not_set"
     }
