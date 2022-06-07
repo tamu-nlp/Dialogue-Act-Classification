@@ -11,5 +11,6 @@ services:
       # Change the line below if you want to use a different port mapping. The
       # format is "host_port:container_port".
       #  - "8000:8000"
-    entrypoint: dac_server:MESSAGE_BUS
+    # entrypoint: dac_server:MESSAGE_BUS
+    entrypoint: python dac_server.py
 
