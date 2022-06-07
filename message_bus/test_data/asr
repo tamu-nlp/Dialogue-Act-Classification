@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+mosquitto_pub -t agent/asr/final -f asr.metadata
