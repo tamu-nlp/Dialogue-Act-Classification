@@ -15,7 +15,7 @@ class MessageBus(Utils):
     # shown on startup splash
     name = "TDAC"
 
-    def __init__(self, host, port, dac_server):
+    def __init__(self, dac_server, host, port):
         self.dac_server = dac_server
 
         # init message handlers
@@ -37,6 +37,14 @@ class MessageBus(Utils):
         self.heartbeat_publisher = HeartbeatPublisher(self)
         print("Connected to Message Bus at " + self.mqtt_url)
         print(self.name + " version " + Version.version + " running.")
+
+    # run a classification on ASR
+    def classify_utterance(self, participant_id, text):
+        self.dac_server.classify_utterance(participant_id, text)
+
+    # reset the model on trial start and stop
+    def reset_model(self):
+        self.dac_server.reset_model()
     
     # handle incoming message
     def on_message(self, message_d):
