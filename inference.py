@@ -44,7 +44,9 @@ class Predictor:
         self.last_speaker = '<None>'
 
     def predict(self, sentence):
+        print(f'inference.predict with ({sentence})')
         curr_spk, snt = sentence.strip().split(':')
+
 
         spk = '<same> ' if curr_spk == self.last_speaker else '<switch> '
 
@@ -60,5 +62,6 @@ class Predictor:
         return self.out_map[predict[-1].item()] #we are only interested in the label for last utterance, others only serve as context
 
     def reset_model(self):
+        print('inference.py reset_model')
         self.sent = ['<sos>' for _ in range(self.history_len)]
         self.last_speaker = '<None>'
