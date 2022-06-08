@@ -22,10 +22,10 @@ class Message(ABC, Utils):
                 "timestamp" : timestamp,
             },
             "msg": {
-                "message_type": self.message_type,
                 "source": self.source,
                 "sub_type": self.sub_type,
-                "timestamp" : timestamp
+                "timestamp" : timestamp,
+                "version" : Version.version # this application version
             }
         }
 
@@ -39,7 +39,7 @@ class Message(ABC, Utils):
         # update common header
         src = message_d["header"]
         dst = d["header"]
-        self.update_field(src, dst, "version")
+        self.update_field(src, dst, "version") # subscribed message version
 
         # update common message
         src = message_d["msg"]
