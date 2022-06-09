@@ -14,7 +14,7 @@ class AsrMessageHandler(Message):
         self.message_bus = message_bus
 
     def on_message(self, asr_message_d):
-        if(self.is_subscribed(asr_message_d)
+        if (self.is_subscribed(asr_message_d)
         and 'data' in asr_message_d):
             data = asr_message_d['data']
             if ('participant_id' in data

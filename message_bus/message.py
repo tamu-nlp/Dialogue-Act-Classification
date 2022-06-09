@@ -4,14 +4,14 @@ from version import Version
 
 class Message(ABC, Utils):
 
-    # extending classes set these
+    # extending classes override these
     topic = "not_set"
     message_type = "not_set"
     sub_type = "not_set"
     source = "not_set"
     data = {}
 
-    # fields not requiring anything from the Message Bus
+    # dictionary of default fields not requiring anything from the Message Bus
     def get_default_d(self):
         timestamp = self.timestamp()
         d = {
@@ -31,7 +31,7 @@ class Message(ABC, Utils):
 
         return d
 
-    # update a default dictionary with fields from Message Bus message
+    # dictionary of default fields and message bus fields
     def get_d(self, message_d):
 
         d = self.get_default_d()
