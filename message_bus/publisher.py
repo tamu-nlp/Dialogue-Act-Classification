@@ -26,11 +26,12 @@ class Publisher(Utils):
             "msg" : d["msg"]
         }
 
-        # ship it
-        self.client.publish(topic, json.dumps(message_d))
+        # ship it 
+        publication = json.dumps(message_d, separators=(',', ':'))
+        self.client.publish(topic, publication)
 
         # set booleans for realtime publication logging
         if(True):
-            print("Published: " + topic)
+            print(f"Published on {topic}: ")
         if(True):
-            print(json.dumps(d, indent=2))
+            print(publication)
