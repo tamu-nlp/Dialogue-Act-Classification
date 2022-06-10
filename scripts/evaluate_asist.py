@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import torch
 import numpy as np
 import pandas as pd
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import classification_report
+
+sys.path.insert(0, "..")
 from baseline_model import Classifier
 from copy import deepcopy
 from collections import namedtuple
+
 np.set_printoptions(threshold=np.inf)
 import regex as re
 import warnings
