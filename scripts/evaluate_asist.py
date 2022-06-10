@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from cProfile import label
 import os
 import torch
