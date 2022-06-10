@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 
-from cProfile import label
 import os
 import torch
 import numpy as np
 import pandas as pd
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 from baseline_model import Classifier
-import torch.nn as nn
-import torch.optim as optim
-import time
 from copy import deepcopy
 from collections import namedtuple
 np.set_printoptions(threshold=np.inf)
-from sklearn.metrics import accuracy_score
 import regex as re
 import warnings
 warnings.filterwarnings('ignore')
@@ -156,19 +151,14 @@ if __name__ == '__main__':
     parser.add_argument('--results_file', help='Name of file to write classwise results to', default="results", type=str)
     parser.add_argument('--ASR', help='Use uncorrected ASR transcripts', default=0, type=int)
     parser.add_argument('--model_file', help='The trained model weights file to use', default='sequential_baseline_roberta_B32_W8_seed1.pt', type=str)
-
-
     args = parser.parse_args()
     has_cuda = torch.cuda.is_available()
     ASR = args.ASR
     data_path = args.data
     results_filename = args.results_file
     saved_model_file = args.model_file
-
     test_data = get_data(data_path, ASR)
-
     print("Test Data: {0}".format(len(test_data)))
-
     out_map = {'tc': 0, 'h': 1, 'nd': 2, 'qw': 3, 'df': 4, 't1': 5, 'na': 6, 'cs': 7, 'qh': 8, 'by': 9, 'g': 10,
                 'ng': 11, 'no': 12, 'bs': 13, 'fe': 14, 'rt': 15, 'd': 16, 't3': 17, 'fa': 18, 'br': 19, 'qrr': 20,
                 'arp': 21, 'qr': 22, 'r': 23, 'aap': 24, '2': 25, 'e': 26, 'cc': 27, 'ba': 28, '%': 29, 'b': 30,
@@ -177,7 +167,6 @@ if __name__ == '__main__':
     print("All labels: ", len(out_map))
     model = Classifier({'num_layers': 1, 'hidden_dim': 512, 'bidirectional': True, 'embedding_dim': 768,
                         'dropout': 0.1, 'out_dim': len(out_map), "sum_emb_rep": False})
-
     model = model.to(device)
     model.init_weights()
     model.load_state_dict(torch.load(saved_model_file))
