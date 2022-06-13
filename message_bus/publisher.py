@@ -29,18 +29,18 @@ class Publisher():
         topic = d['topic']
 
         # do not publish the topic
-        message_d = {
+        published_d = {
             "data":d["data"],
             "header": d["header"],
             "msg" : d["msg"]
         }
 
         # ship it 
-        publication = json.dumps(message_d, separators=(',', ':'))
+        publication = json.dumps(published_d, separators=(',', ':'))
         self.client.publish(topic, publication)
 
         # set booleans for realtime publication logging
         if(True):
             print(f"Published on {topic}: ")
-        if(False):
+        if(True):
             print(publication)

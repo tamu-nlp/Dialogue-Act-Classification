@@ -27,8 +27,10 @@ class Message(ABC, Utils):
             }
         }
 
+        return d
+
     def get_d(self, message_d):
-        d = get_default_d()
+        d = self.get_default_d()
 
         # update common header with possibly non-existant data
         src = message_d["header"]
