@@ -3,7 +3,6 @@ from version import Version
 import datetime
 import re
 
-
 class Message(ABC):
 
     source = 'dialog_act_classifier'
@@ -51,13 +50,13 @@ class Message(ABC):
             }
         }
 
-        # update common header with possibly non-existant data
+        # update common header with possibly non-existant fields
         if 'header' in message_d:
             src = message_d["header"]
             dst = d["header"]
             self.update_field(src, dst, "version")
 
-        # update common message with possibly non-existant data
+        # update common message with possibly non-existant fields
         if 'msg' in message_d:
             src = message_d["msg"]
             dst = d["msg"]
