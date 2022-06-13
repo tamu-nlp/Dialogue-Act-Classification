@@ -4,18 +4,16 @@ from heartbeat_message import HeartbeatMessage
 # This class generates a heartbeat message on the heartbeat interval in a
 # seperate thread that does not block the MQTT clients 
 #
-# A HeartbeatMessage object is created that persists in memory
+# A HeartbeatMessage object is created that persists in memory.
 # When the program starts up there is no trial information so default
 # data is generated.  When a trial start message is received, the 
 # persistent heartbeat message is updated with trial information.  When
-# a trial stop message is received, the published heartbeat reverts to default
-# data
+# a trial stop message is received, the published heartbeat reverts 
+# to default data
 
 class HeartbeatPublisher():
     heartbeat_interval_seconds = 10 # set > 0 to for regular heartbeats
     heartbeat_message = HeartbeatMessage()
-
-    print (heartbeat_message.topic)
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
@@ -30,7 +28,7 @@ class HeartbeatPublisher():
     # Start the pulse in a seperate thread so MQTT clients are not blocked
     def __init__(self, message_bus):
         self.message_bus = message_bus
-        self.d = self.heartbeat_message.get_default_d()
+        self.d = self.heartbeat_message.get_d({})
         self.d['data'] = self.heartbeat_message.get_data()
         if(self.heartbeat_interval_seconds > 0):
             print(

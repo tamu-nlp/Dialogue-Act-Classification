@@ -1,6 +1,5 @@
 import paho.mqtt.client as mqtt
 import json
-from utils import Utils
 from version_info_message import VersionInfoMessage
 from tdac_message import TdacMessage
 from heartbeat_message import HeartbeatMessage
