@@ -1,6 +1,5 @@
 import threading
 from heartbeat_message import HeartbeatMessage
-from version_info_message import VersionInfoMessage
 
 # This class generates a heartbeat message on the heartbeat interval in a
 # seperate thread that does not block the MQTT clients 
@@ -9,6 +8,7 @@ class HeartbeatPublisher:
     heartbeat_interval_seconds = 10 # set > 0 to for regular heartbeats
     heartbeat_message = HeartbeatMessage()
     d = heartbeat_message.get_default_d()
+    d['data'] = heartbeat_message.get_data()
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
@@ -38,12 +38,10 @@ class HeartbeatPublisher:
         else:
             print(splash_msg + " (Scheduled heartbeats suppressed)")
 
-    def trial_start(self, message_d):
+    def start(self, message_d):
         self.d = self.heartbeat_message.get_d(message_d)
         self.publish_heartbeat()
-        version_message = VersionInfoMessage()
-        self.message_bus.publish(version_message.get_d(message_d))
 
-    def trial_stop(self, message_d):
+    def stop(self, message_d):
         self.d = self.heartbeat_message.get_d(message_d)
         self.publish_heartbeat()

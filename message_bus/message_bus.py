@@ -2,29 +2,17 @@ import sys
 from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
-from message_handlers import TrialStartMessageHandler
-from message_handlers import TrialStopMessageHandler
-from message_handlers import RollcallRequestMessageHandler
-from message_handlers import AsrMessageHandler
-from utils import Utils
 from version import Version
+from version_info_message import VersionInfoMessage
 
 # Coordinator class for all things Message Bus
-class MessageBus(Utils):
+class MessageBus():
 
     # shown on startup splash
     name = "TDAC"
 
     def __init__(self, dac_server, host, port):
         self.dac_server = dac_server
-
-        # init message handlers
-        self.message_handlers = [
-            AsrMessageHandler(self),
-            RollcallRequestMessageHandler(self),
-            TrialStartMessageHandler(self),
-            TrialStopMessageHandler(self)
-        ]
 
         # connect to the Message Bus
         print(self.name + " is connecting to Message Bus...")
@@ -42,14 +30,18 @@ class MessageBus(Utils):
     def classify_utterance(self, participant_id, text):
         return self.dac_server.classify_utterance(participant_id, text)
 
-    # reset the model on trial start and stop
-    def reset_model(self):
-        self.dac_server.reset_model()
-    
-    # handle incoming message
-    def on_message(self, message_d):
-        for handler in self.message_handlers:
-            handler.on_message(message_d)
+    def start_trial(self, trial_message_d):
+        version_info_message = VersionInfoMessage()
+        d = version_info_message.get_d(trial_message_d)
+        d['data'] = version_info_message.get_data()
+        self.publish(d)
 
-    def publish(self, message_d):
-        self.publisher.publish(message_d)
+        self.dac_server.reset_model()
+        self.heartbeat_publisher.start(trial_message_d)
+
+    def stop_trial(self, trial_message_d):
+        self.dac_server.reset_model()
+        self.heartbeat_publisher.start(trial_message_d)
+
+    def publish(self, published_message_d):
+        self.publisher.publish(published_message_d)

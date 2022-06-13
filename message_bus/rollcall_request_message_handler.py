@@ -1,4 +1,5 @@
 from message import Message
+from rollcall_response_message import RollcallResponseMessage
 
 # handle rollcall request message and send response if needed
 class RollcallRequestMessageHandler(Message):
@@ -6,15 +7,11 @@ class RollcallRequestMessageHandler(Message):
     message_type = "agent"
     sub_type = "rollcall:request"
 
-    response = RollcallResponseMessage()
+    rollcall_response_message = RollcallResponseMessage()
 
-    def __init__(self, message_bus):
-        self.message_bus = message_bus
-        self.test['topic'] = 'trial'
-        self.test['msg']['sub_type'] = 'start'
-        self.test['header']['message_type'] = 'trial'
-
-    def on_message(self, message_d):
-        if(self.is_subscribed(message_d)):
-            self.message_bus.publish(self.response.get_d(message_d))
-
+    def on_message(self, message_bus, rollcall_request_message_d):
+        if self.is_subscribed(rollcall_request_message_d):
+            d = self.rollcall_response_message.get_d(
+                rollcall_request_message_d)
+            d['data'] = self.rollcall_response_message.get_data()
+            message_bus.publish(d)

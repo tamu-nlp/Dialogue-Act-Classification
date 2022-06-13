@@ -1,4 +1,5 @@
 from message import Message
+from tdac_message import TdacMessage
 
 # Create a classification message based on the ASR message text
 class AsrMessageHandler(Message):
@@ -8,14 +9,8 @@ class AsrMessageHandler(Message):
 
     tdac_message = TdacMessage()
 
-    def __init__(self, message_bus):
-        self.message_bus = message_bus
-
-    def on_message(self, asr_message_d):
-        participant_id = asr_message_d['data']['participant_id']
-        text = asr_message_d['data']['text']
-        label = self.message_bus.classify_utterance(participant_id, text)
-        tdac_message_d = self.tdac_message.get_d(asr_message_d)
-        tdac_message_d['data']['label'] = label
-        tdac_message_d['data']['asr_msg_id'] = data['id']
-        self.message_bus.publish(tdac_message_d)
+    def on_message(self, message_bus, asr_message_d):
+        if(self.is_subscribed(asr_message_d)):
+            d = self.tdac_message.get_d(asr_message_d)
+            d['data'] = self.tdac_message.get_data(message_bus, asr_message_d)
+            message_bus.publish(d)

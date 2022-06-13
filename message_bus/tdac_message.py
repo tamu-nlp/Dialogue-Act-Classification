@@ -1,12 +1,17 @@
-from version import Version
 from message import Message
 
 class TdacMessage(Message):
-    topic = "agent/dialog_act_classifier"
-    message_type = "agent"
-    sub_type = "dialog_act_label"
-    source = "dialog_act_classifier"
-    data = {
-        "label" : "not_set",
-        "asr_msg_id" : "not_set"
-    }
+    topic = 'agent/dialog_act_classifier'
+    message_type = 'agent'
+    sub_type = 'dialog_act_label'
+
+    def get_data(self, message_bus, asr_message_d):
+
+        participant_id = asr_message_d['data']['participant_id']
+        text = asr_message_d['data']['text']
+        label = message_bus.classify_utterance(participant_id, text)
+
+        return {
+            'label' : message_bus.classify_utterance(participant_id, text),
+            'asr_msg_id' : asr_message_d['data']['id']
+        }

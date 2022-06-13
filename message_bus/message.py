@@ -4,19 +4,17 @@ from version import Version
 
 class Message(ABC, Utils):
 
+    source = 'dialog_act_classifier'
+
     # extending classes override these
     topic = "not_set"
     message_type = "not_set"
     sub_type = "not_set"
-    source = "not_set"
-    data = {}
 
-    # dictionary of default fields not requiring anything from the Message Bus
     def get_default_d(self):
         timestamp = self.timestamp()
         d = {
             "topic": self.topic,
-            "data": self.data,
             "header": {
                 "message_type" : self.message_type,
                 "timestamp" : timestamp,
@@ -29,19 +27,15 @@ class Message(ABC, Utils):
             }
         }
 
-        return d
-
-    # dictionary of default fields and message bus fields
     def get_d(self, message_d):
+        d = get_default_d()
 
-        d = self.get_default_d()
-
-        # update common header
+        # update common header with possibly non-existant data
         src = message_d["header"]
         dst = d["header"]
-        self.update_field(src, dst, "version") # subscribed message version
+        self.update_field(src, dst, "version")
 
-        # update common message
+        # update common message with possibly non-existant data
         src = message_d["msg"]
         dst = d["msg"]
         self.update_field(src, dst, "experiment_id")
@@ -52,7 +46,7 @@ class Message(ABC, Utils):
 
         return d
 
-    # return true this class matches the message class
+    # return true if the class parameters match the message dict parameters
     def is_subscribed(self, message_d):
         return ((message_d["topic"] == self.topic)
         and (message_d["header"]["message_type"] == self.message_type)

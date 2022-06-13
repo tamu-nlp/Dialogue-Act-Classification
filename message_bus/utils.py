@@ -24,19 +24,13 @@ class Utils:
         else: 
             return m.group(0) + 'Z'
 
-    def topics(self, d):
-        f=[]
-        for t in d: 
-            f.append(t["topic"])
-        return set(f)
-
     # return true if the messages have the same subscription fields
     def is_subscribed(self, d1, d2):
         return ((d1["topic"] == d2["topic"])
         and (d1["header"]["message_type"] == d2["header"]["message_type"])
         and (d1["msg"]["sub_type"] == d2["msg"]["sub_type"]))
 
-    def is_subscribed(self, d, topic, message_type, sub_type):
-        return ((d["topic"] == topic)
-        and (d["header"]["message_type"] == message_type)
-        and (d["msg"]["sub_type"] == sub_type))
+#    def is_subscribed(self, d, topic, message_type, sub_type):
+#        return ((d["topic"] == topic)
+#        and (d["header"]["message_type"] == message_type)
+#        and (d["msg"]["sub_type"] == sub_type))

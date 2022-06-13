@@ -1,15 +1,28 @@
 import paho.mqtt.client as mqtt
 import json
 from version import Version
-from utils import Utils
-from version_info_message import VersionInfoMessage
+from trial_message_handler import *
+from rollcall_request_message_handler import RollcallRequestMessageHandler
+from asr_message_handler import AsrMessageHandler
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
-class Subscriber(Utils):
+class Subscriber():
 
     # messages handled
     message_count = 0
+
+    # every relevant message gets a handler
+    message_handlers = (
+        AsrMessageHandler(),
+        RollcallRequestMessageHandler(),
+        TrialStartMessageHandler(),
+        TrialStopMessageHandler()
+    )
+
+    def subscribe(self, topic):
+        self.client.subscribe(topic)
+        print(f'Subscribed to: {topic}')
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -17,9 +30,9 @@ class Subscriber(Utils):
 
         # Paho return code definitions
         if(rc == 0):
-            for topic in self.topics(VersionInfoMessage.data["subscribes"]):
-                self.client.subscribe(topic)
-                print("Subscribed to: " + topic)
+            self.subscribe(AsrMessageHandler.topic)
+            self.subscribe(RollcallRequestMessageHandler.topic)
+            self.subscribe(TrialMessageHandler.topic)
             self.message_bus.on_subscriber_connect()
         elif(rc == 1):
             print("Connection refused - incorrect protocol version")
@@ -50,8 +63,9 @@ class Subscriber(Utils):
         self.message_count += 1
         print(f'message {self.message_count}: {msg.topic}')
 
-        # send to message_bus coordinator for dispatching
-        self.message_bus.on_message(message_d)
+        # send message to each handler
+        for handler in self.message_handlers:
+            handler.on_message(self.message_bus, message_d)
 
     def __init__(self, message_bus, host, port):
         self.message_bus = message_bus

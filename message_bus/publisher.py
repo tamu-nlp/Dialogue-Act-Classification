@@ -2,22 +2,31 @@ import paho.mqtt.client as mqtt
 import json
 from utils import Utils
 from version_info_message import VersionInfoMessage
+from tdac_message import TdacMessage
+from heartbeat_message import HeartbeatMessage
+from rollcall_response_message import RollcallResponseMessage
 
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
 
 # non-asynchronous Message Bus publisher
-class Publisher(Utils):
+class Publisher():
+
+    published_messages = (
+        VersionInfoMessage,
+        TdacMessage,
+        RollcallResponseMessage,
+        HeartbeatMessage
+    )
 
     def __init__(self, message_bus, host, port):
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.connect(host, port, 6000, "")
-        for topic in self.topics(VersionInfoMessage.data["publishes"]):
-            print("Publishing on: " + topic)
-        self.client.loop_start()
+        for publication in self.published_messages:
+            print(f'Publishing on: {publication.topic}')
 
     def publish(self, d):
-        topic = d["topic"]
+        topic = d['topic']
 
         # do not publish the topic
         message_d = {
@@ -33,5 +42,5 @@ class Publisher(Utils):
         # set booleans for realtime publication logging
         if(True):
             print(f"Published on {topic}: ")
-        if(True):
+        if(False):
             print(publication)
