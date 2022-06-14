@@ -12,12 +12,21 @@ from heartbeat_message import HeartbeatMessage
 # to default data
 
 class HeartbeatPublisher():
-    heartbeat_interval_seconds = 10 # set > 0 to for regular heartbeats
+
+    # set > 0 to for regular heartbeats
+    heartbeat_interval_seconds = 10
+
+    # used to create heartbeat message dictionaries
     heartbeat_message = HeartbeatMessage()
+
+    # used by heartbeat_message when creating heartbeat message dictionaries
+    message_d = {}
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
-        self.message_bus.publish(self.d)
+        d = self.heartbeat_message.get_d(self.message_d)
+        d['data'] = self.heartbeat_message.get_data()
+        self.message_bus.publish(d)
 
     # trigger heartbeats on a preset interval
     def pulse(self, phony):
@@ -28,24 +37,17 @@ class HeartbeatPublisher():
     # Start the pulse in a seperate thread so MQTT clients are not blocked
     def __init__(self, message_bus):
         self.message_bus = message_bus
-        self.d = self.heartbeat_message.get_d({})
-        self.d['data'] = self.heartbeat_message.get_data()
         if(self.heartbeat_interval_seconds > 0):
             print(
                 "Heartbeat publication interval: " 
                 + str(self.heartbeat_interval_seconds)
                 + " seconds"
             )
-            self.publish_heartbeat()
+            self.publish_heartbeat() # send a beat immediately
             worker = threading.Thread(target=self.pulse, args=("phony",))
             worker.start()
 
-    def start(self, message_d):
-        self.d = self.heartbeat_message.get_d(message_d)
-        self.d['data'] = self.heartbeat_message.get_data()
-        self.publish_heartbeat()
-
-    def stop(self, message_d):
-        self.d = self.heartbeat_message.get_d(message_d)
-        self.d['data'] = self.heartbeat_message.get_data()
+    # set the message used to create heartbeat messages
+    def set_message_d(self, message_d):
+        self.message_d = message_d
         self.publish_heartbeat()

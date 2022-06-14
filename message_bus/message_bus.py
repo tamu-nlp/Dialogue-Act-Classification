@@ -37,11 +37,11 @@ class MessageBus():
         self.publish(d)
 
         self.dac_server.reset_model()
-        self.heartbeat_publisher.start(trial_message_d)
+        self.heartbeat_publisher.set_message_d(trial_message_d)
 
     def stop_trial(self, trial_message_d):
         self.dac_server.reset_model()
-        self.heartbeat_publisher.start(trial_message_d)
+        self.heartbeat_publisher.set_message_d(trial_message_d)
 
     def publish(self, published_message_d):
         self.publisher.publish(published_message_d)
