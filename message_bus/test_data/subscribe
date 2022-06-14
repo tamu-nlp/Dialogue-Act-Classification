@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+mosquitto_sub -t agent/uaz_tdac_agent/versioninfo -t agent/dialog_act_classifier -t agent/control/rollcall/response -t agent/dialogue_act_classfier/heartbeat | jq

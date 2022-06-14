@@ -42,7 +42,9 @@ class TdacServer:
     mqtt_port = 1883
 
     def __init__(self):
-        print('TDAC server init')
+        print('TDAC server init:')
+        print(f' host = {self.mqtt_host}')
+        print(f' port = {self.mqtt_port}')
         self.message_bus = MessageBus(self, self.mqtt_host, self.mqtt_port)
 
     # The model should reset before and after each mission.

@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
+# This is the old test program, we need a new one.
+
 set -euo pipefail
 
 # Script to test the Dialogue Act Classification server
 
 # Set the ROOT environment variable, assuming that the directory structure
 # mirrors that of the git repository.
-export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
+# export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 
 # Test model resetting
-curl localhost:8000/reset-model &> /dev/null
+# curl localhost:8000/reset-model &> /dev/null
 
 # Test utterance classification
-curl \
-    -X GET localhost:8000/classify \
-    -H "Content-Type: application/json" \
-    -d @${ROOT}/data/test.json
+# curl \
+#     -X GET localhost:8000/classify \
+#     -H "Content-Type: application/json" \
+#     -d @${ROOT}/data/test.json
 
 exit 0
