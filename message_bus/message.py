@@ -50,13 +50,13 @@ class Message(ABC):
             }
         }
 
-        # update common header with possibly non-existant fields
+        # update common header incoming header fields
         if 'header' in message_d:
             src = message_d["header"]
             dst = d["header"]
             self.update_field(src, dst, "version")
 
-        # update common message with possibly non-existant fields
+        # update common message with incoming common message fields
         if 'msg' in message_d:
             src = message_d["msg"]
             dst = d["msg"]
