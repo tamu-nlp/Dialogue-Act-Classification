@@ -5,25 +5,29 @@ from heartbeat_publisher import HeartbeatPublisher
 from version import Version
 from version_info_message import VersionInfoMessage
 
-# Coordinator class for all things Message Bus
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# Coordinator class for the MQTT components of the DAC server
+#
+
 class MessageBus():
 
     # shown on startup splash
-    name = "TDAC"
+    name = 'TDAC'
 
     def __init__(self, dac_server, host, port):
         self.dac_server = dac_server
 
         # connect to the Message Bus
-        print(self.name + " is connecting to Message Bus...")
-        self.mqtt_url = "tcp://" + host + ":" + str(port)
+        print(self.name + ' is connecting to Message Bus...')
+        self.mqtt_url = 'tcp://' + host + ':' + str(port)
         self.publisher = Publisher(self, host, port)
         self.subscriber = Subscriber(self, host, port)
 
     # subscriber has successfully connected to the MQTT broker
     def on_subscriber_connect(self):
-        print("Connected to Message Bus at " + self.mqtt_url)
-        print(self.name + " version " + Version.version + " running.")
+        print('Connected to Message Bus at ' + self.mqtt_url)
+        print(self.name + ' version ' + Version.version + ' running.')
         self.heartbeat_publisher = HeartbeatPublisher(self)
 
     # publish a classification message based on the input text

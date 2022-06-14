@@ -1,11 +1,15 @@
 from message import Message
 from rollcall_response_message import RollcallResponseMessage
 
-# handle rollcall request message and send response if needed
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# handle rollcall request message and send response if subscribed
+#
+
 class RollcallRequestMessageHandler(Message):
-    topic = "agent/control/rollcall/request"
-    message_type = "agent"
-    sub_type = "rollcall:request"
+    topic = 'agent/control/rollcall/request'
+    message_type = 'agent'
+    sub_type = 'rollcall:request'
 
     rollcall_response_message = RollcallResponseMessage()
 

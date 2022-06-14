@@ -5,9 +5,13 @@ from tdac_message import TdacMessage
 from heartbeat_message import HeartbeatMessage
 from rollcall_response_message import RollcallResponseMessage
 
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# Asynchronous Message Bus publisher
+#
 # https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php
+#
 
-# non-asynchronous Message Bus publisher
 class Publisher():
 
     published_messages = (
@@ -22,20 +26,20 @@ class Publisher():
         keepalive_s = 6000  
         self.message_bus = message_bus
         self.client = mqtt.Client()
-        self.client.connect(host, port, keepalive_s, "")
+        self.client.connect(host, port, keepalive_s, '')
         for publication in self.published_messages:
             print(f'Publishing on: {publication.topic}')
 
     def publish(self, d):
         topic = d['topic']
 
-        # do not publish the topic
-        published_d = {
-            "data":d["data"],
-            "header": d["header"],
-            "msg" : d["msg"]
+        # Publish everything but the topic
+        output_d = {
+            'data':d['data'],
+            'header': d['header'],
+            'msg' : d['msg']
         }
 
         # ship it 
-        publication = json.dumps(published_d, separators=(',', ':'))
+        publication = json.dumps(output_d, separators=(',', ':'))
         self.client.publish(topic, publication)

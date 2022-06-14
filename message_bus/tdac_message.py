@@ -1,5 +1,10 @@
 from message import Message
 
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# Produced whenever we get an ASR message, uses the DAC 
+#
+
 class TdacMessage(Message):
     topic = 'agent/dialog_act_classifier'
     message_type = 'agent'

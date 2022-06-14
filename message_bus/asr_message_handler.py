@@ -1,11 +1,13 @@
 from message import Message
 from tdac_message import TdacMessage
 
+# Authors:  Joseph Astier, Adarsh Pyarelal
+
 # Create a classification message based on the ASR message text
 class AsrMessageHandler(Message):
-    topic = "agent/asr/final"
-    message_type = "observation"
-    sub_type = "asr:transcription"
+    topic = 'agent/asr/final'
+    message_type = 'observation'
+    sub_type = 'asr:transcription'
 
     tdac_message = TdacMessage()
 

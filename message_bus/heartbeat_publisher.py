@@ -1,15 +1,11 @@
 import threading
 from heartbeat_message import HeartbeatMessage
 
-# This class generates a heartbeat message on the heartbeat interval in a
-# seperate thread that does not block the MQTT clients 
+# Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# A HeartbeatMessage object is created that persists in memory.
-# When the program starts up there is no trial information so default
-# data is generated.  When a trial start message is received, the 
-# persistent heartbeat message is updated with trial information.  When
-# a trial stop message is received, the published heartbeat reverts 
-# to default data
+# Generates a heartbeat message on the heartbeat interval in a
+# seperate non-blocking thread 
+#
 
 class HeartbeatPublisher():
 
@@ -39,12 +35,12 @@ class HeartbeatPublisher():
         self.message_bus = message_bus
         if(self.heartbeat_interval_seconds > 0):
             print(
-                "Heartbeat publication interval: " 
+                'Heartbeat publication interval: ' 
                 + str(self.heartbeat_interval_seconds)
-                + " seconds"
+                + ' seconds'
             )
             self.publish_heartbeat() # send a beat immediately
-            worker = threading.Thread(target=self.pulse, args=("phony",))
+            worker = threading.Thread(target=self.pulse, args=('phony',))
             worker.start()
 
     # set the message used to create heartbeat messages

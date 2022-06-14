@@ -1,3 +1,8 @@
-# software version of the Dialogue-Act-Classification agent
+
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# software version of the uaz_tdac_agent application
+#
+
 class Version:
-    version = "1.0.0"
+    version = '1.0.0'

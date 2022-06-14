@@ -8,6 +8,11 @@ from trial_message_handler import TrialStartMessageHandler
 from trial_message_handler import TrialStopMessageHandler
 from version import Version
 
+# Authors:  Joseph Astier, Adarsh Pyarelal
+#
+# Generate the Version Info Message that is published at the 
+# start of each trial
+
 class VersionInfoMessage (Message):
 
     topic = 'agent/uaz_tdac_agent/versioninfo'
