@@ -39,9 +39,3 @@ class Publisher():
         # ship it 
         publication = json.dumps(published_d, separators=(',', ':'))
         self.client.publish(topic, publication)
-
-        # set booleans for realtime publication logging
-        if(True):
-            print(f"Published on {topic}: ")
-        if(True):
-            print(publication)
