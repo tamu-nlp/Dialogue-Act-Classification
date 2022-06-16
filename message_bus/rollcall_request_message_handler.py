@@ -3,7 +3,8 @@ from rollcall_response_message import RollcallResponseMessage
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# handle rollcall request message and send response if subscribed
+# Handle a rollcall request subscribed from the message bus by publishing
+# a rollcall response message.
 #
 
 class RollcallRequestMessageHandler(Message):
@@ -13,9 +14,9 @@ class RollcallRequestMessageHandler(Message):
 
     rollcall_response_message = RollcallResponseMessage()
 
-    def on_message(self, message_bus, rollcall_request_message_d):
-        if self.is_subscribed(rollcall_request_message_d):
+    def on_message(self, message_bus, rollcall_request_d):
+        if self.is_subscribed(rollcall_request_d):
             d = self.rollcall_response_message.get_d(
-                rollcall_request_message_d)
-            d['data'] = self.rollcall_response_message.get_data()
+                message_bus,
+                rollcall_request_d)
             message_bus.publish(d)

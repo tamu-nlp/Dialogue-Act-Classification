@@ -7,7 +7,7 @@ from version_info_message import VersionInfoMessage
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Coordinator class for the MQTT components of the DAC server
+# Coordinator class for the interaction between Message Bus and DAC server
 #
 
 class MessageBus():

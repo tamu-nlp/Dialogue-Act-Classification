@@ -38,14 +38,15 @@ class Message(ABC):
         else:
             return m.group(0) + 'Z'
 
-    # return a dictionary based on incoming message dictionary
-    def get_d(self, message_d):
+    # return a partial dicationary based on the incoming message
+    def get_base_d(self, message_d):
         timestamp = self.timestamp()
         d = {
             'topic': self.topic,
             'header': {
                 'message_type' : self.message_type,
                 'timestamp' : timestamp,
+                'version' : '1.0' # default if testbed version not found
             },
             'msg': {
                 'source': self.source,
@@ -59,7 +60,7 @@ class Message(ABC):
         if 'header' in message_d:
             src = message_d['header']
             dst = d['header']
-            self.update_field(src, dst, 'version')
+            self.update_field(src, dst, 'version') # testbed version
 
         # update common message with incoming common message fields
         if 'msg' in message_d:
@@ -73,7 +74,7 @@ class Message(ABC):
 
         return d
 
-    # return true if the class parameters match the message dict parameters
+    # return true if the class parameters match the message dictionary
     def is_subscribed(self, message_d):
         return ((message_d['topic'] == self.topic)
         and (message_d['header']['message_type'] == self.message_type)
