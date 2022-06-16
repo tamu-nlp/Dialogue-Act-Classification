@@ -16,12 +16,11 @@ class HeartbeatPublisher():
     heartbeat_message = HeartbeatMessage()
 
     # used by heartbeat_message when creating heartbeat message dictionaries
-    message_d = {}
+    trial_d = {}
 
     # Create a heartbeat message and send it off for publishing
     def publish_heartbeat(self):
-        d = self.heartbeat_message.get_d(self.message_d)
-        d['data'] = self.heartbeat_message.get_data()
+        d = self.heartbeat_message.get_d(self.message_bus, self.trial_d)
         self.message_bus.publish(d)
 
     # trigger heartbeats on a preset interval
@@ -44,6 +43,6 @@ class HeartbeatPublisher():
             worker.start()
 
     # set the message used to create heartbeat messages
-    def set_message_d(self, message_d):
-        self.message_d = message_d
+    def set_trial_d(self, trial_d):
+        self.trial_d = trial_d
         self.publish_heartbeat()
