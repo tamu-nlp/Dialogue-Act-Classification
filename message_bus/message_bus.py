@@ -4,6 +4,7 @@ from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
 from version import Version
 from version_info_message import VersionInfoMessage
+from heartbeat_message import HeartbeatMessage
 import datetime
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
@@ -33,7 +34,14 @@ class MessageBus():
         # connect to the Message Bus
         print(self.name + ' is connecting to Message Bus...')
         self.mqtt_url = 'tcp://' + host + ':' + str(port)
+        
+        # create the publisher and immediately publish init status
         self.publisher = Publisher(self, host, port)
+        hm = HeartbeatMessage();
+        d = hm.get_init_d()
+        self.publish(d)
+
+        # create the subscriber and wait for it to connect
         self.subscriber = Subscriber(self, host, port)
 
     # subscriber has successfully connected to the MQTT broker
