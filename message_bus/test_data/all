@@ -5,4 +5,5 @@
 ./trial_start
 ./rollcall_request
 ./asr
+./chat
 ./trial_stop

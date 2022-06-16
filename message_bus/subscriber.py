@@ -4,6 +4,7 @@ from version import Version
 from trial_message_handler import *
 from rollcall_request_message_handler import RollcallRequestMessageHandler
 from asr_message_handler import AsrMessageHandler
+from chat_message_handler import ChatMessageHandler
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
@@ -20,6 +21,7 @@ class Subscriber():
     # every relevant message gets a handler
     message_handlers = (
         AsrMessageHandler(),
+        ChatMessageHandler(),
         RollcallRequestMessageHandler(),
         TrialStartMessageHandler(),
         TrialStopMessageHandler()
@@ -36,6 +38,7 @@ class Subscriber():
         # Paho return code definitions
         if(rc == 0):
             self.subscribe(AsrMessageHandler.topic)
+            self.subscribe(ChatMessageHandler.topic)
             self.subscribe(RollcallRequestMessageHandler.topic)
             self.subscribe(TrialMessageHandler.topic)
             self.message_bus.on_subscriber_connect()

@@ -17,5 +17,12 @@ class AsrMessageHandler(Message):
     # publish a TDAC dictionary based on the ASR dictionary
     def on_message(self, message_bus, asr_d):
         if(self.is_subscribed(asr_d)):
-            d = self.tdac_message.get_d(message_bus, asr_d)
-            message_bus.publish(d)
+            participant_id = asr_d['data']['participant_id']
+            text = asr_d['data']['text']
+            tdac_d = self.tdac_message.get_d(message_bus,
+                participant_id, text, asr_d)
+            
+            # add asr-only field
+            tdac_d['data']['asr_msg_id'] = asr_d['data']['id']
+
+            message_bus.publish(tdac_d)
