@@ -10,8 +10,11 @@ from version import Version
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Generate the Version Info Message that is published at the 
-# start of each trial
+# This message is written to the Message Bus when we receive a Trial Start
+# message
+# 
+# Specification: https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/MessageSpecs/Agent/versioninfo/agent_versioninfo.md
+#
 
 class VersionInfoMessage (Message):
 
@@ -19,8 +22,10 @@ class VersionInfoMessage (Message):
     message_type = 'agent'
     sub_type = 'versioninfo'
 
-    def get_data(self):
-        return {
+    # return a dictionary based on the trial dictionary
+    def get_d(self, message_bus, trial_d):
+        d = self.get_base_d(trial_d)
+        d['data'] = {
             'agent_name': self.source,
             'owner': 'University of Arizona',
             'source': [
@@ -74,3 +79,5 @@ class VersionInfoMessage (Message):
             ],
             'version': Version.version
         }
+
+        return d

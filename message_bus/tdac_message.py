@@ -2,7 +2,9 @@ from message import Message
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Produced whenever we get an ASR message, uses the DAC 
+# This message is written to the Message Bus whenever we receive an ASR message
+#
+# Specification: https://github.com/tamu-nlp/Dialogue-Act-Classification/blob/main/message_specs/tdac_message.md
 #
 
 class TdacMessage(Message):
@@ -10,13 +12,16 @@ class TdacMessage(Message):
     message_type = 'agent'
     sub_type = 'dialog_act_label'
 
-    def get_data(self, message_bus, asr_message_d):
-
-        participant_id = asr_message_d['data']['participant_id']
-        text = asr_message_d['data']['text']
+    # create a publication dictionary based on the asr dictionary
+    def get_d(self, message_bus, asr_d):
+        participant_id = asr_d['data']['participant_id']
+        text = asr_d['data']['text']
         label = message_bus.classify_utterance(participant_id, text)
 
-        return {
+        d = self.get_base_d(asr_d)
+        d['data'] = {
             'label' : message_bus.classify_utterance(participant_id, text),
-            'asr_msg_id' : asr_message_d['data']['id']
+            'asr_msg_id' : asr_d['data']['id']
         }
+
+        return d
