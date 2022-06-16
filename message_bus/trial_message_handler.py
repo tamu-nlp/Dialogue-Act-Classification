@@ -2,8 +2,8 @@ from message import Message
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Handle trial start and trial stop messages subscribed from the Message Bus
-# by calling trial_start or trial_stop methods of the message_bus class
+# Identify trial start and stop messages, and enter the appropriate states
+# on the messag_bus coordinator class.
 #
 
 class TrialMessageHandler():

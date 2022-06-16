@@ -15,12 +15,12 @@ class TdacMessage(Message):
     # create a publication dictionary based on the asr dictionary
     def get_d(self, message_bus, asr_d):
         participant_id = asr_d['data']['participant_id']
-        text = asr_d['data']['text']
-        label = message_bus.classify_utterance(participant_id, text)
+        utterance = asr_d['data']['text']
+        label = message_bus.classify_utterance(participant_id, utterance)
 
         d = self.get_base_d(asr_d)
         d['data'] = {
-            'label' : message_bus.classify_utterance(participant_id, text),
+            'label' : label,
             'asr_msg_id' : asr_d['data']['id']
         }
 

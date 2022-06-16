@@ -73,11 +73,12 @@ class Subscriber():
             handler.on_message(self.message_bus, message_d)
 
     def __init__(self, message_bus, host, port):
+        mqtt_keepalive = 6000 # seconds
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(host, port, 6000)
+        self.client.connect(host, port, mqtt_keepalive)
 
         # main loop for this MQTT application
         self.client.loop_forever()

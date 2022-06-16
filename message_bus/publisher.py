@@ -23,23 +23,21 @@ class Publisher():
 
     def __init__(self, message_bus, host, port):
         print(f'Publisher host: {host}, port: {port}')
-        keepalive_s = 6000  
+        mqtt_keepalive = 6000 # seconds 
         self.message_bus = message_bus
         self.client = mqtt.Client()
-        self.client.connect(host, port, keepalive_s, '')
+        self.client.connect(host, port, mqtt_keepalive, '')
         for publication in self.published_messages:
             print(f'Publishing on: {publication.topic}')
 
     def publish(self, d):
         topic = d['topic']
 
-        # Publish everything but the topic
+        # Publish only data, msg, and header.
         output_d = {
             'data':d['data'],
             'header': d['header'],
             'msg' : d['msg']
         }
-
-        # ship it 
         publication = json.dumps(output_d, separators=(',', ':'))
         self.client.publish(topic, publication)

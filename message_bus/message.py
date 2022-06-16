@@ -17,13 +17,13 @@ class Message(ABC):
     message_type = 'not_set'
     sub_type = 'not_set'
 
-        # copy a dictionary field that may not exist
+    # copy a dictionary field. Remove key if not in source.
     def update_field(self, src, dst, key):
         if(key in dst):
             del dst[key]
         if(key in src):
             value = src[key]
-            if(value != None):
+            if(value):
                 dst.update({key:value})
 
     # return a UTC timestamp in format:  YYYY-MM-DDThh:mm:ss.ssssZ
@@ -79,3 +79,4 @@ class Message(ABC):
         return ((message_d['topic'] == self.topic)
         and (message_d['header']['message_type'] == self.message_type)
         and (message_d['msg']['sub_type'] == self.sub_type))
+

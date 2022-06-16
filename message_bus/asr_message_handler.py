@@ -3,8 +3,8 @@ from tdac_message import TdacMessage
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Handle an ASR message subscribed from the Message Bus by creating
-# and publishing a TDAC Message based on the ASR message text
+# Handle an ASR message subscribed from the Message Bus by publishing
+# a TDAC Message based on the ASR message text
 #
 
 class AsrMessageHandler(Message):

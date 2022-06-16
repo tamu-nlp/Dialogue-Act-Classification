@@ -2,8 +2,8 @@ from message import Message
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 # 
-# This message is written to the Message Bus on a fixed interval to advise of
-# the runtime status of this application.
+# The Heartbeat Message is published to the Message Bus on a fixed interval to
+# advise of the runtime status of this application.
 # 
 # Specification: https://gitlab.asist.aptima.com/asist/testbed/-/blob/develop/MessageSpecs/Status/status.md
 #
