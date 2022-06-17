@@ -22,13 +22,13 @@ class Publisher():
     )
 
     def __init__(self, message_bus, host, port):
-        print(f'Publisher host: {host}, port: {port}')
         mqtt_keepalive = 6000 # seconds 
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.connect(host, port, mqtt_keepalive, '')
+        print('Publications:')
         for publication in self.published_messages:
-            print(f'Publishing on: {publication.topic}')
+            print(f'  {publication.topic}')
 
     def publish(self, d):
         topic = d['topic']

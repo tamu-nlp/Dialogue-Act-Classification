@@ -42,10 +42,6 @@ class ClassificationMessage(BaseModel):
 class TdacServer:
 
     def __init__(self, args):
-        print('TDAC server init:')
-        print(f' host = {args.host}')
-        print(f' port = {args.port}')
-        print(f' nochat = {args.nochat}')
         self.message_bus = MessageBus(self,
             args.host, args.port, args.nochat)
 

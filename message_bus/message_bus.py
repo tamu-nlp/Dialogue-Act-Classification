@@ -33,6 +33,9 @@ class MessageBus():
 
         # connect to the Message Bus
         print(self.name + ' is connecting to Message Bus...')
+        print(f'  host = {host}')
+        print(f'  port = {port}')
+
         self.mqtt_url = 'tcp://' + host + ':' + str(port)
         
         # create the publisher and immediately publish init status

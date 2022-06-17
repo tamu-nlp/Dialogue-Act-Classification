@@ -29,7 +29,7 @@ class Subscriber():
 
     def subscribe(self, topic):
         self.client.subscribe(topic)
-        print(f'Subscribed to: {topic}')
+        print(f'  {topic}')
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -37,6 +37,7 @@ class Subscriber():
 
         # Paho return code definitions
         if(rc == 0):
+            print('Subscriptions:')
             self.subscribe(AsrMessageHandler.topic)
             self.subscribe(RollcallRequestMessageHandler.topic)
             self.subscribe(TrialMessageHandler.topic)
