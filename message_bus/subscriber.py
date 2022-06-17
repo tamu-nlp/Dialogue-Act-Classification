@@ -38,9 +38,10 @@ class Subscriber():
         # Paho return code definitions
         if(rc == 0):
             self.subscribe(AsrMessageHandler.topic)
-            self.subscribe(ChatMessageHandler.topic)
             self.subscribe(RollcallRequestMessageHandler.topic)
             self.subscribe(TrialMessageHandler.topic)
+            if not self.nochat:
+                self.subscribe(ChatMessageHandler.topic)
             self.message_bus.on_subscriber_connect()
         elif(rc == 1):
             print('Connection refused - incorrect protocol version')
@@ -75,8 +76,9 @@ class Subscriber():
         for handler in self.message_handlers:
             handler.on_message(self.message_bus, message_d)
 
-    def __init__(self, message_bus, host, port):
+    def __init__(self, message_bus, host, port, nochat):
         mqtt_keepalive = 6000 # seconds
+        self.nochat = nochat
         self.message_bus = message_bus
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect

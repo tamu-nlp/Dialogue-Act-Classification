@@ -3,6 +3,8 @@ from typing import Optional, Dict, List
 from dataclasses import dataclass
 from pydantic import BaseModel
 from inference import Predictor
+import argparse
+
 
 import sys
 sys.path.append('message_bus')
@@ -38,14 +40,14 @@ class ClassificationMessage(BaseModel):
 
 # MQTT broker network location
 class TdacServer:
-    mqtt_host = 'localhost'
-    mqtt_port = 1883
 
-    def __init__(self):
+    def __init__(self, args):
         print('TDAC server init:')
-        print(f' host = {self.mqtt_host}')
-        print(f' port = {self.mqtt_port}')
-        self.message_bus = MessageBus(self, self.mqtt_host, self.mqtt_port)
+        print(f' host = {args.host}')
+        print(f' port = {args.port}')
+        print(f' nochat = {args.nochat}')
+        self.message_bus = MessageBus(self,
+            args.host, args.port, args.nochat)
 
     # The model should reset before and after each mission.
     def reset_model(self):
@@ -57,4 +59,27 @@ class TdacServer:
         return classification
 
 
-tdac_server = TdacServer()
+
+
+# If run as a script, take command line args
+if __name__ == '__main__':
+
+    # ingest command line args
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-host',
+        action='store',
+        default = 'localhost',
+        help = 'The MQTT broker machine name.')
+    parser.add_argument('-port',
+        action='store',
+        default = 1883,
+        help = 'The MQTT broker port number.')
+    parser.add_argument('--nochat',
+        action='store_true',
+        help = 'Do not process Minecraft Chat messages.')
+    args = parser.parse_args(sys.argv[1:])
+
+    # start the server
+    tdac_server = TdacServer(args)
+
