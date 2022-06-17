@@ -2,4 +2,8 @@
 
 # Author: Joseph Astier
 
-mosquitto_pub -t "agent/control/rollcall/request" -f rollcall_request.metadata
+topic='agent/control/rollcall/request'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f rollcall_request.metadata

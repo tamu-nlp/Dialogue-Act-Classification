@@ -2,4 +2,8 @@
 
 # Author: Joseph Astier
 
-mosquitto_pub -t trial -f trial_start.metadata
+topic='trial'
+
+echo "publishing $topic (start)"
+
+mosquitto_pub -t $topic -f trial_start.metadata

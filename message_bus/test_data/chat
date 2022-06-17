@@ -2,4 +2,9 @@
 
 # Author: Joseph Astier
 
-mosquitto_pub -t minecraft/chat -f chat.metadata
+topic='minecraft/chat'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f chat.metadata
+

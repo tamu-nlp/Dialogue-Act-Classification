@@ -2,4 +2,8 @@
 
 # Author: Joseph Astier
 
-mosquitto_pub -t agent/asr/final -f asr.metadata
+topic='agent/asr/final'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f asr.metadata
