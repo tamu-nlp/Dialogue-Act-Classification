@@ -33,7 +33,7 @@ def process_file(dirname, ASR):
     fnames = os.listdir(dirname)
     for fname in fnames:
         data = pd.read_csv(os.path.join(dirname,fname), sep = "#", header=None, 
-                 names = ["speaker", 'utt', 'corr_utt', 'DA', 'AP'])
+                 names = ["speaker", 'utt', 'corr_utt', 'DA', 'AP'], encoding = "utf-8")
         doc = []
         for i in range(len(data)):
             cor_utt = data.iloc[i].corr_utt
