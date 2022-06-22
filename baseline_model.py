@@ -11,7 +11,7 @@ import warnings
 warnings.filterwarnings('ignore')
 if torch.cuda.is_available():  
     print("Using GPU")   
-    device = torch.device("cuda:0")
+    device = torch.device("cuda:1")
 else:
     print("No GPU found")
     device = torch.device("cpu")
