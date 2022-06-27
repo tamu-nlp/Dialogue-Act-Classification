@@ -49,12 +49,11 @@ class TdacServer:
     def reset_model(self):
         PREDICTOR.reset_model()
 
-    # 
-    def classify_utterance(self, participant_id, text):
-        classification = PREDICTOR.predict(f"{participant_id}:{text}")
+    # classification for ASR and chat messages, utterance is formatted
+    # as 'speaker : text'
+    def classify_utterance(self, utterance):
+        classification = PREDICTOR.predict(utterance)
         return classification
-
-
 
 
 # If run as a script, take command line args

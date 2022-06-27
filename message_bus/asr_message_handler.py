@@ -19,8 +19,8 @@ class AsrMessageHandler(Message):
         if(self.is_subscribed(asr_d)):
             participant_id = asr_d['data']['participant_id']
             text = asr_d['data']['text']
-            tdac_d = self.tdac_message.get_d(message_bus,
-                participant_id, text, asr_d)
+            utterance = f'{participant_id} : {text}'
+            tdac_d = self.tdac_message.get_d(message_bus, utterance, asr_d)
             
             # add asr-only field
             tdac_d['data']['asr_msg_id'] = asr_d['data']['id']

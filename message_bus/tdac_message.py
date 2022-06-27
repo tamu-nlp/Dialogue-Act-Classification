@@ -13,12 +13,10 @@ class TdacMessage(Message):
     sub_type = 'dialog_act_label'
 
     # create a publication dictionary based on the id and text
-    def get_d(self, message_bus, participant_id, text, message_d):
-        label = message_bus.classify_utterance(participant_id, text)
-
+    def get_d(self, message_bus, utterance, message_d):
         d = self.get_base_d(message_d)
+        label = message_bus.classify_utterance(utterance)
         d['data'] = {
             'label' : label
         }
-
         return d

@@ -25,6 +25,7 @@ else:
 utterance = namedtuple('utterance', ['speaker_id', 'text', 'tag1', 'tag2', 'tag3'])
 
 def process_file(dirname):
+    print('baseline_run.process_file')
     data = []
     fnames = os.listdir(dirname)
     for fname in fnames:
@@ -38,12 +39,14 @@ def process_file(dirname):
 
 
 def get_data(fpath):
+    print('baseline_run.get_data')
     return (process_file(fpath+'train/'),
             process_file(fpath+'val/'),
             process_file(fpath+'test/'))
 
 
 def get_context(dialog):
+    print('baseline_run.get_context')
     all_sent = []
     out = []
     last_spk = 'None'
@@ -59,6 +62,7 @@ def get_context(dialog):
 
 
 def train(epoch, data, window_size, batch_size=100):
+    print('baseline_run.train')
     random.shuffle(data)
     start_time = time.time()
     classifier_loss = 0
@@ -96,6 +100,7 @@ def train(epoch, data, window_size, batch_size=100):
 
 
 def evaluate(data, prev_best_, window_size, batch_size):
+    print('baseline_run.evaluate')
     y_true, y_pred = [], []
     model.eval()
 
@@ -122,6 +127,7 @@ def evaluate(data, prev_best_, window_size, batch_size):
 
 
 if __name__ == '__main__':
+    print('baseline_run.__main__')
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--drop', help='DROP', default=0.4, type=float)
     parser.add_argument('--learn_rate', help='LEARNING RATE', default=10e-4, type=float)

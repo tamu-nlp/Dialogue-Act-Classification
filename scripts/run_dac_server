@@ -2,15 +2,12 @@
 
 set -euo pipefail
 
-# Script to run TAMU dialogue act classification web service
+# Script to run the python TAMU dialogue act classification application
 
 # Set the ROOT environment variable, assuming that the directory structure
 # mirrors that of the git repository.
 export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 
 pushd ${ROOT} > /dev/null
-    # The `--reload` flag reloads the app whenever there is a change to the program,
-    # which is useful for development purposes.
-    python dac_server
-    # uvicorn dac_server:app --reload 
+    python ../dac_server.py
 popd > /dev/null

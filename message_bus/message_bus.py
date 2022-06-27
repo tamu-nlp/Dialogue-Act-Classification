@@ -54,8 +54,8 @@ class MessageBus():
         self.heartbeat_publisher = HeartbeatPublisher(self)
 
     # publish a classification message based on the input text
-    def classify_utterance(self, participant_id, text):
-        return self.dac_server.classify_utterance(participant_id, text)
+    def classify_utterance(self, utterance):
+        return self.dac_server.classify_utterance(utterance)
 
     # enter running trial state
     def start_trial(self, trial_d):
