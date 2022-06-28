@@ -16,29 +16,27 @@ from message_bus import MessageBus
 
 # Get model path
 MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
-#print(MODEL_PATH)
-
-
-# Create predictor object
-PREDICTOR = Predictor(model_path=MODEL_PATH, history_len=7)
-
 
 # Create the server instance
 class TdacServer:
 
     def __init__(self, args):
+
+        # Create predictor object
+        self.predictor = Predictor(model_path=MODEL_PATH, history_len=7)
+
         config_d = Config().get_d()
         self.message_bus = MessageBus(self,
             args.host, args.port, args.nochat, config_d)
 
     # The model should reset before and after each mission.
     def reset_model(self):
-        PREDICTOR.reset_model()
+        self.predictor.reset_model()
 
     # classification for ASR and chat messages, utterance is formatted
     # as 'speaker : text'
     def classify_utterance(self, utterance):
-        classification = PREDICTOR.predict(utterance)
+        classification = self.predictor.predict(utterance)
         return classification
 
 
