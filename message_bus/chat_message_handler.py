@@ -1,5 +1,6 @@
 from message import Message
 from tdac_message import TdacMessage
+from config import Config
 import json
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
@@ -17,15 +18,25 @@ class ChatMessageHandler(Message):
 
     tdac_message = TdacMessage()
 
+    ignored_senders = []
+
     # Make sure the sender isn't excluded in the config file
     def sender_valid(self, sender):
-        # hardcoded at the moment for bench testing
-        if sender == 'Server':
-            print(f'Chat sender {sender} is excluded')
-            return False
-        print(f'Chat sender {sender} is included **********')
+        for ignored_sender in self.ignored_senders:
+            if ignored_sender == sender:
+                return False
         return True
 
+    def read_config(self, message_bus_config_d):
+        chat_config_d = message_bus_config_d.get('chat',{})
+        self.ignored_senders = chat_config_d.get('ignored_senders',[])
+        if len(self.ignored_senders) > 0:
+            print('Chat message handler ignoring senders: ')
+            for sender in self.ignored_senders:
+                print('  ' + sender)
+
+    def __init__(self, config_d):
+        self.read_config(config_d)
 
     # publish a TDAC dictionary based on the Chat dictionary
     def on_message(self, message_bus, chat_d):

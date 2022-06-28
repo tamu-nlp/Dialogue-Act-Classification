@@ -3,6 +3,7 @@ from typing import Optional, Dict, List
 from dataclasses import dataclass
 from pydantic import BaseModel
 from inference import Predictor
+from config import Config
 import argparse
 
 
@@ -42,8 +43,9 @@ class ClassificationMessage(BaseModel):
 class TdacServer:
 
     def __init__(self, args):
+        config_d = Config().get_d()
         self.message_bus = MessageBus(self,
-            args.host, args.port, args.nochat)
+            args.host, args.port, args.nochat, config_d)
 
     # The model should reset before and after each mission.
     def reset_model(self):

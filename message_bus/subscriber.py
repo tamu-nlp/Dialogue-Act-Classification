@@ -18,15 +18,6 @@ class Subscriber():
     # messages handled
     message_count = 0
 
-    # every relevant message gets a handler
-    message_handlers = (
-        AsrMessageHandler(),
-        ChatMessageHandler(),
-        RollcallRequestMessageHandler(),
-        TrialStartMessageHandler(),
-        TrialStopMessageHandler()
-    )
-
     def subscribe(self, topic):
         self.client.subscribe(topic)
         print(f'  {topic}')
@@ -77,7 +68,7 @@ class Subscriber():
         for handler in self.message_handlers:
             handler.on_message(self.message_bus, message_d)
 
-    def __init__(self, message_bus, host, port, nochat):
+    def __init__(self, message_bus, host, port, nochat, config_d):
         mqtt_keepalive = 6000 # seconds
         self.nochat = nochat
         self.message_bus = message_bus
@@ -85,6 +76,15 @@ class Subscriber():
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.connect(host, port, mqtt_keepalive)
+
+        # every relevant message gets a handler
+        self.message_handlers = (
+            AsrMessageHandler(),
+            ChatMessageHandler(config_d),
+            RollcallRequestMessageHandler(),
+            TrialStartMessageHandler(),
+            TrialStopMessageHandler()
+        )
 
         # main loop for this MQTT application
         self.client.loop_forever()

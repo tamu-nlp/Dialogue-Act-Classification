@@ -28,7 +28,7 @@ class MessageBus():
 
         return dt_s
 
-    def __init__(self, dac_server, host, port, nochat):
+    def __init__(self, dac_server, host, port, nochat, config_d):
         self.dac_server = dac_server
 
         # connect to the Message Bus
@@ -45,7 +45,8 @@ class MessageBus():
         self.publish(d)
 
         # create the subscriber and wait for it to connect
-        self.subscriber = Subscriber(self, host, port, nochat)
+        self.subscriber = Subscriber(self, 
+            host, port, nochat, config_d.get('message_bus',{}))
 
     # subscriber has successfully connected to the MQTT broker
     def on_subscriber_connect(self):
@@ -82,3 +83,7 @@ class MessageBus():
     # write to the message_bs
     def publish(self, d):
         self.publisher.publish(d)
+
+    # return the config object
+    def get_config(self):
+        return self.config
