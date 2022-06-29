@@ -5,14 +5,11 @@ from pydantic import BaseModel
 from inference import Predictor
 from config import Config
 import argparse
-
-
 import sys
+
+# local imports
 sys.path.append('message_bus')
 from message_bus import MessageBus
-
-
-#print(os.path.dirname(__file__))
 
 # Get model path
 MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
@@ -46,11 +43,11 @@ if __name__ == '__main__':
     # ingest command line args
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-host',
+    parser.add_argument('--host',
         action='store',
         default = 'localhost',
         help = 'The MQTT broker machine name.')
-    parser.add_argument('-port',
+    parser.add_argument('--port',
         action='store',
         default = 1883,
         help = 'The MQTT broker port number.')
