@@ -3,19 +3,9 @@
 
 version: '3'
 
-networks:
-  dialogue-act-classification_default:
-    external: true
-
-
 services:
 
-
   tamu_dialogue_act_classifier:
-
-    networks:
-      - dialogue-act-classification_default
-
     image: tamu_dialogue_act_classifier:latest
     container_name: tamu_dialogue_act_classifier
     build: .
