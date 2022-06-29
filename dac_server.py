@@ -50,6 +50,7 @@ if __name__ == '__main__':
     parser.add_argument('--port',
         action='store',
         default = 1883,
+        type=int,
         help = 'The MQTT broker port number.')
     parser.add_argument('--nochat',
         action='store_true',

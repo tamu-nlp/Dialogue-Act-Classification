@@ -1,18 +1,25 @@
-# A Docker Compose file for running the TAMU dialogue act classifier 
+# A docker-compose file for running the TAMU Dialogue Act Classifier (TDAC)
 # as a standalone python app
 
 version: '3'
 
 networks:
-  asist_net:
-   external: true
+  dialogue-act-classification_default:
+    external: true
+
 
 services:
+
+
   tamu_dialogue_act_classifier:
+
+    networks:
+      - dialogue-act-classification_default
+
     image: tamu_dialogue_act_classifier:latest
     container_name: tamu_dialogue_act_classifier
     build: .
     environment:
       - PYTHONUNBUFFERED=1
 
-    entrypoint: python dac_server.py
+    entrypoint: python dac_server.py --host host.docker.internal --port 1883
