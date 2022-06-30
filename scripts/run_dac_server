@@ -8,6 +8,8 @@ set -euo pipefail
 # mirrors that of the git repository.
 export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 
+echo "ROOT = $ROOT"
+
 pushd ${ROOT} > /dev/null
-    python ../dac_server.py
+    python dac_server.py
 popd > /dev/null
