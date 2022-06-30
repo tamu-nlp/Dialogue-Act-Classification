@@ -1,4 +1,4 @@
-TAMU Dialogue Act Classifier
+TAMU Dialogue Act Classifier  (TDAC)
 ============================
 
 
@@ -15,6 +15,22 @@ You can install the dependencies and download the pretrained model by running
 Usage
 -----
 
+The Classifier runs on the Message Bus and uses the following topics:
+
+```
+Publications:
+  agent/uaz_tdac_agent/versioninfo
+  agent/dialog_act_classifier
+  agent/control/rollcall/response
+  agent/dialogue_act_classfier/heartbeat
+Subscriptions:
+  agent/asr/final
+  agent/control/rollcall/request
+  trial
+  minecraft/chat
+```
+
+
 #### Without Docker
 
 You can run the dialogue act classifier on a Linux operating system with:
@@ -27,7 +43,15 @@ You can run the dialogue act classifier on a Linux operating system with:
 To run the classifier in a Docker container, use the following:
 
     docker-compose up --build
+    
 
+#### Command line arguments
+The Classifier can be invoked with the following optional command line arguments
+```
+--host HOST  The MQTT broker machine name. (default: localhost)
+--port PORT  The MQTT broker port number. (default: 1883)
+--nochat     Do not process Minecraft Chat messages. (default: False)
+```
 
 ### Python API
 
@@ -54,12 +78,9 @@ print(classification)
 prd.reset_model()
 ````
 
-### Test script
+### Testing
 
-The `run_test.py` script demonstrates how to use the Python API. You run it by
-simply invoking the following:
-
-    python run_test.py
+The directory `test_data` contains metadata files for each Testbed message type, and scripts to publish each on the Message Bus.  Invoking these scripts will test each subscribed channel of the Classifier.
 
 
 Performance of the classifier on the MRDA corpus
