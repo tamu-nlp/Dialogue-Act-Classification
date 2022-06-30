@@ -22,16 +22,24 @@ Running the application from the command line
 ------------
 
 To download the pretrained model and other depedencies manually, run
-
-    ./scripts/install
-
+```
+./scripts/install
+```
 To start the application, run
+```
+./scripts/run_tdac
+```
+Or on the command line invoke
+```
+python tdac.py [-h] [--host HOST] [--port PORT] [--nochat]
+```
 
-    ./scripts/run_tdac
-
-Or simply invoke 
-    python 
-    
+with the following optional command line arguments
+```
+--host HOST  The MQTT broker machine name. (default: localhost)
+--port PORT  The MQTT broker port number. (default: 1883)
+--nochat     Do not process Minecraft Chat messages. (default: False)
+```    
 Running the application in a Docker Container 
 -----
 
@@ -39,35 +47,8 @@ To build and start the application within a Docker container:
 
     docker-compose up --build
 
-Usage
------
-
-The Classifier runs on the Message Bus and publishes to the following topics:
 
 
-
-
-#### Without Docker
-
-You can run the dialogue act classifier on a Linux operating system with:
-
-    ./scripts/run_dac_server
-
-
-#### With Docker
-
-To run the classifier in a Docker container, use the following:
-
-    docker-compose up --build
-    
-
-#### Command line arguments
-The Classifier can be invoked with the following optional command line arguments
-```
---host HOST  The MQTT broker machine name. (default: localhost)
---port PORT  The MQTT broker port number. (default: 1883)
---nochat     Do not process Minecraft Chat messages. (default: False)
-```
 
 ### Python API
 
