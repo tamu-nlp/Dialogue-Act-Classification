@@ -1,35 +1,50 @@
 TAMU Dialogue Act Classifier  (TDAC)
 ============================
 
-
-Installation
-------------
-
-If you want to use the classifier in a Docker continer, skip to the
-'With Docker' section below. Otherwise, read on.
-
-You can install the dependencies and download the pretrained model by running
-
-    ./scripts/install
-
-Usage
------
-
-The Classifier runs on the Message Bus and publishes to the following topics:
-
-```
-agent/uaz_tdac_agent/versioninfo
-agent/dialog_act_classifier
-agent/control/rollcall/response
-agent/dialogue_act_classfier/heartbeat
-```
-Subscriptions from the Message Bus:
+The Texas A&M Dialog Act Classifier runs on the Testbed Message Bus.  It subscribes to the following topics:
 ```
 agent/asr/final
 agent/control/rollcall/request
 trial
 minecraft/chat
 ```
+
+It publishes messages on the following topics:
+```
+agent/uaz_tdac_agent/versioninfo
+agent/dialog_act_classifier
+agent/control/rollcall/response
+agent/dialogue_act_classfier/heartbeat
+```
+
+
+Running the application from the command line 
+------------
+
+To download the pretrained model and other depedencies manually, run
+
+    ./scripts/install
+
+To start the application, run
+
+    ./scripts/run_tdac
+
+Or simply invoke 
+    python 
+    
+Running the application in a Docker Container 
+-----
+
+To build and start the application within a Docker container:
+
+    docker-compose up --build
+
+Usage
+-----
+
+The Classifier runs on the Message Bus and publishes to the following topics:
+
+
 
 
 #### Without Docker
