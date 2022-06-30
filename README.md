@@ -15,19 +15,20 @@ You can install the dependencies and download the pretrained model by running
 Usage
 -----
 
-The Classifier runs on the Message Bus and uses the following topics:
+The Classifier runs on the Message Bus and publishes to the following topics:
 
 ```
-Publications:
-  agent/uaz_tdac_agent/versioninfo
-  agent/dialog_act_classifier
-  agent/control/rollcall/response
-  agent/dialogue_act_classfier/heartbeat
-Subscriptions:
-  agent/asr/final
-  agent/control/rollcall/request
-  trial
-  minecraft/chat
+agent/uaz_tdac_agent/versioninfo
+agent/dialog_act_classifier
+agent/control/rollcall/response
+agent/dialogue_act_classfier/heartbeat
+```
+Subscriptions from the Message Bus:
+```
+agent/asr/final
+agent/control/rollcall/request
+trial
+minecraft/chat
 ```
 
 
