@@ -28,8 +28,8 @@ class MessageBus():
 
         return dt_s
 
-    def __init__(self, dac_server, host, port, nochat, config_d):
-        self.dac_server = dac_server
+    def __init__(self, tdac, host, port, nochat, config_d):
+        self.tdac = tdac
 
         # connect to the Message Bus
         print(self.name + ' is connecting to Message Bus...')
@@ -56,7 +56,7 @@ class MessageBus():
 
     # publish a classification message based on the input text
     def classify_utterance(self, utterance):
-        return self.dac_server.classify_utterance(utterance)
+        return self.tdac.classify_utterance(utterance)
 
     # enter running trial state
     def start_trial(self, trial_d):
@@ -65,8 +65,8 @@ class MessageBus():
         d = version_info_message.get_d(self, trial_d)
         self.publish(d)
 
-        # reset the DAC
-        self.dac_server.reset_model()
+        # reset the TDAC
+        self.tdac.reset_model()
 
         # base heartbeats on the trial message (has trial id)
         self.heartbeat_publisher.set_trial_d(trial_d)
@@ -74,8 +74,8 @@ class MessageBus():
     # enter stopped trial state
     def stop_trial(self, trial_d):
 
-        # reset the DAC
-        self.dac_server.reset_model()
+        # reset the TDAC
+        self.tdac.reset_model()
 
         # base heartbeats on the trial message (no trial id)
         self.heartbeat_publisher.set_trial_d(trial_d)

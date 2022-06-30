@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# Script to run the python TAMU dialogue act classification application
+# Script to run the python TAMU Dialogue Act Classifier (TDAC)
 
 # Set the ROOT environment variable, assuming that the directory structure
 # mirrors that of the git repository.
@@ -11,5 +11,5 @@ export ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)
 echo "ROOT = $ROOT"
 
 pushd ${ROOT} > /dev/null
-    python dac_server.py
+    python tdac.py
 popd > /dev/null

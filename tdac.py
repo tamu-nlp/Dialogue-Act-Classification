@@ -14,8 +14,8 @@ from message_bus import MessageBus
 # Get model path
 MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
 
-# Create the server instance
-class TdacServer:
+# Create the TDAC instance
+class Tdac:
 
     def __init__(self, args):
 
@@ -57,5 +57,5 @@ if __name__ == '__main__':
         help = 'Do not process Minecraft Chat messages.')
     args = parser.parse_args(sys.argv[1:])
 
-    # start the server
-    tdac_server = TdacServer(args)
+    # start the application
+    tdac = Tdac(args)

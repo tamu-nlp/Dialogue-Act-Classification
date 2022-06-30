@@ -12,4 +12,4 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-    entrypoint: python dac_server.py --host host.docker.internal --port 1883
+    entrypoint: python tdac_app.py --host host.docker.internal --port 1883
