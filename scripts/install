@@ -13,8 +13,8 @@ pushd ${ROOT} > /dev/null
     pip install wheel
     pip install -r requirements.txt
     pip3 install paho-mqtt python-etcd
+    ./scripts/install_torch
     echo "Installed dependencies."
-
     "$ROOT"/scripts/download_pretrained_model
 popd > /dev/null
 

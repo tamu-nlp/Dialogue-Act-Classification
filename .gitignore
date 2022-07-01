@@ -6,3 +6,6 @@ data/*
 
 # ignore vim swap files
 *.swp
+
+# ignore generated results files
+results.csv
