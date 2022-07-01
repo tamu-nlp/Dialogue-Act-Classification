@@ -26,6 +26,7 @@ from copy import deepcopy
 
 
 def get_context(dialog, history_len):
+    print('predict.get_context')
     all_sent, all_ls = [], []
     unchanged_sents = []
     sent, ls = [['<sos>'] for _ in range(history_len)], [1]*history_len
@@ -69,6 +70,7 @@ def get_context(dialog, history_len):
 
 
 def parse_pred(fname):
+    print('predict.parse_pred')
     data = []
     # doc = []
     reader = open(fname, 'r')
@@ -102,10 +104,12 @@ def parse_pred(fname):
 
 
 def flatten_list(l):
+    print('predict.flatten_list')
     return [item for sample in l for item in sample]
 
 
 def evaluate(data, history_len, batch_size):
+    print('predict.evaluate')
     model.eval()
     pred_file = open("../model/DA_labels_new.txt", 'w')
 
@@ -142,6 +146,7 @@ def evaluate(data, history_len, batch_size):
 
 
 if __name__ == '__main__':
+    print('predict.__main__')
     has_cuda = torch.cuda.is_available()
 
     np.random.seed(0)

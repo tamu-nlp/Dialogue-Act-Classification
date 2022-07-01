@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+topic='agent/asr/final'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f asr.metadata

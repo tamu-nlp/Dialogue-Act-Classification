@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+topic='minecraft/chat'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f chat.metadata
+

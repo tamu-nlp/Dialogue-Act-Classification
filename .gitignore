@@ -4,4 +4,8 @@ __pycache__
 # Ignore items under data/ by default
 data/*
 
+# ignore vim swap files
+*.swp
+
+# ignore generated results files
 results.csv

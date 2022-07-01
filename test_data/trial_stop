@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+topic='trial'
+
+echo "publishing $topic (stop)"
+
+mosquitto_pub -t $topic -f trial_stop.metadata

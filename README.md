@@ -1,46 +1,54 @@
-TAMU Dialogue Act Classifier
+TAMU Dialogue Act Classifier  (TDAC)
 ============================
 
+The Texas A&M Dialog Act Classifier runs on the Testbed Message Bus.  It subscribes to the following topics:
+```
+agent/asr/final
+agent/control/rollcall/request
+trial
+minecraft/chat
+```
 
-Installation
+It publishes messages on the following topics:
+```
+agent/uaz_tdac_agent/versioninfo
+agent/dialog_act_classifier
+agent/control/rollcall/response
+agent/dialogue_act_classfier/heartbeat
+```
+
+
+Running the application from the command line 
 ------------
 
-If you want to use the classifier as a Dockerized web service, skip to the
-'With Docker' section below. Otherwise, read on.
+To download the pretrained model and other depedencies manually, run
+```
+./scripts/install
+```
+To start the application, run
+```
+./scripts/run_tdac
+```
+Or on the command line invoke
+```
+python tdac.py [-h] [--host HOST] [--port PORT] [--nochat]
+```
 
-You can install the dependencies and download the pretrained model by running
-
-    ./scripts/install
-
-Usage
+with the following optional command line arguments
+```
+--host HOST  The MQTT broker machine name. (default: localhost)
+--port PORT  The MQTT broker port number. (default: 1883)
+--nochat     Do not process Minecraft Chat messages. (default: False)
+```    
+Running the application in a Docker Container 
 -----
 
-### Web service
-
-#### Without Docker
-
-You can run the dialogue act classifier as a web service by running the
-following script:
-
-    ./scripts/run_dac_server
-
-The app will run on `http://localhost:8000` by default. To see the
-automatically generated API documentation, visit `http://localhost:8000/docs`.
-
-#### With Docker
-
-To run the classifier as a Dockerized service, run the following invocation:
+To build and start the application within a Docker container:
 
     docker-compose up --build
 
-This will run the service on localhost:8000 by default. You can change the port
-by changing the port mapping in the `docker-compose.yml` file.
 
-#### Testing web service
 
-The script, `scripts/test_dac_server` demonstrates an example HTTP GET request
-to the `/classify` endpoint (the only one that is currently implemented) to get
-a dialogue act classification.
 
 ### Python API
 
@@ -67,12 +75,9 @@ print(classification)
 prd.reset_model()
 ````
 
-### Test script
+### Testing
 
-The `run_test.py` script demonstrates how to use the Python API. You run it by
-simply invoking the following:
-
-    python run_test.py
+The directory `test_data` contains metadata files for each Testbed message type, and scripts to publish each on the Message Bus.  Invoking these scripts will test each subscribed channel of the Classifier.
 
 
 Performance of the classifier on the MRDA corpus

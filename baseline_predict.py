@@ -17,6 +17,7 @@ else:
 
 #predicts DA labels on ASIST data in csv format
 def process_file(dirname):
+    print('baseline_predict.process_file' + dirname)
     data = []
     fnames = os.listdir(dirname)
     for fname in fnames:
@@ -38,6 +39,7 @@ def process_file(dirname):
 
 
 def get_batch(dialog):
+    print('baseline_predict.get_batch')
     sent, true_sents = [], []
     for index, utterance in enumerate(dialog):
         sent.append(utterance[:200])
@@ -45,6 +47,7 @@ def get_batch(dialog):
 
 
 def evaluate(data, is_test=False):
+    print('baseline_predict.evaluate')
     model.eval()
     pred_file = open("DA_labels.txt", 'w')
     for doc in data:
@@ -61,6 +64,7 @@ def evaluate(data, is_test=False):
 
 
 if __name__ == '__main__':
+    print('baseline_predict.__main__')
     has_cuda = torch.cuda.is_available()
 
     np.random.seed(0)

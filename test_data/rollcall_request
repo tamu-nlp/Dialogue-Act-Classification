@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Author: Joseph Astier
+
+topic='agent/control/rollcall/request'
+
+echo "publishing $topic"
+
+mosquitto_pub -t $topic -f rollcall_request.metadata
