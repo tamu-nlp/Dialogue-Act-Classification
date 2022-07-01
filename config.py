@@ -17,7 +17,7 @@ import traceback
 
 class Config:
 
-    filename = './config.json'
+    filename = 'scripts/config.json'
 
     name_key = 'tdac_config'
 
