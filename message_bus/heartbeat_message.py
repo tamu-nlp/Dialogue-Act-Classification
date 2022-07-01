@@ -14,8 +14,8 @@ class HeartbeatMessage(Message):
     sub_type = 'heartbeat'
 
     # create a publication dictionary during initialization
-    def get_init_d(self):
-        d = self.get_base_d({})
+    def get_init_d(self, message_bus):
+        d = self.get_base_d(message_bus, {})
         d['data'] = {
             'state' : 'warn',
             'active' : False,
@@ -25,7 +25,7 @@ class HeartbeatMessage(Message):
 
     # create a publication dictionary based on the trial dictionary
     def get_d(self, message_bus, trial_d):
-        d = self.get_base_d(trial_d)
+        d = self.get_base_d(message_bus, trial_d)
         d['data'] = {
             'state' : 'ok',
             'active' : True,

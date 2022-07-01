@@ -1,5 +1,4 @@
 from abc import ABC
-from version import Version
 import datetime
 import re
 
@@ -39,7 +38,7 @@ class Message(ABC):
             return m.group(0) + 'Z'
 
     # return a partial dicationary based on the incoming message
-    def get_base_d(self, message_d):
+    def get_base_d(self, message_bus, message_d):
         timestamp = self.timestamp()
         d = {
             'topic': self.topic,
@@ -52,7 +51,7 @@ class Message(ABC):
                 'source': self.source,
                 'sub_type': self.sub_type,
                 'timestamp' : timestamp,
-                'version' : Version.version # this application version
+                'version' : message_bus.version # this application version
             }
         }
 

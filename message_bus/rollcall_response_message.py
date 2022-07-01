@@ -15,7 +15,7 @@ class RollcallResponseMessage(Message):
 
     # create a publication dictionary based on the rollcall request dictionary
     def get_d(self, message_bus, rollcall_request_d):
-        d = self.get_base_d(rollcall_request_d)
+        d = self.get_base_d(message_bus, rollcall_request_d)
         d['data'] = {
             'status': 'up',
             'version': Version.version, # this application version

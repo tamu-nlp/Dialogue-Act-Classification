@@ -14,7 +14,7 @@ class TdacMessage(Message):
 
     # create a publication dictionary based on the id and text
     def get_d(self, message_bus, utterance, message_d):
-        d = self.get_base_d(message_d)
+        d = self.get_base_d(message_bus, message_d)
         label = message_bus.classify_utterance(utterance)
         d['data'] = {
             'label' : label

@@ -24,7 +24,7 @@ class VersionInfoMessage (Message):
 
     # return a dictionary based on the trial dictionary
     def get_d(self, message_bus, trial_d):
-        d = self.get_base_d(trial_d)
+        d = self.get_base_d(message_bus, trial_d)
         d['data'] = {
             'agent_name': self.source,
             'owner': 'University of Arizona',

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 from inference import Predictor
 from config import Config
+from version import Version
 import argparse
 import sys
 
@@ -23,8 +24,9 @@ class Tdac:
         self.predictor = Predictor(model_path=MODEL_PATH, history_len=7)
 
         config_d = Config().get_d()
+        version = Version().version
         self.message_bus = MessageBus(self,
-            args.host, args.port, args.nochat, config_d)
+            args.host, args.port, args.nochat, config_d, version)
 
     # The model should reset before and after each mission.
     def reset_model(self):

@@ -2,7 +2,6 @@ import sys
 from subscriber import Subscriber
 from publisher import Publisher
 from heartbeat_publisher import HeartbeatPublisher
-from version import Version
 from version_info_message import VersionInfoMessage
 from heartbeat_message import HeartbeatMessage
 import datetime
@@ -28,11 +27,12 @@ class MessageBus():
 
         return dt_s
 
-    def __init__(self, tdac, host, port, nochat, config_d):
+    def __init__(self, tdac, host, port, nochat, config_d, version):
         self.tdac = tdac
+        self.version = version
 
         # connect to the Message Bus
-        print(self.name + ' is connecting to Message Bus...')
+        print(self.name + ' version ' + version + ' is connecting to Message Bus...')
         print(f'  host = {host}')
         print(f'  port = {port}')
 
@@ -41,7 +41,7 @@ class MessageBus():
         # create the publisher and immediately publish init status
         self.publisher = Publisher(self, host, port)
         hm = HeartbeatMessage();
-        d = hm.get_init_d()
+        d = hm.get_init_d(self)
         self.publish(d)
 
         # create the subscriber and wait for it to connect
@@ -51,7 +51,7 @@ class MessageBus():
     # subscriber has successfully connected to the MQTT broker
     def on_subscriber_connect(self):
         print('Connected to Message Bus at ' + self.mqtt_url)
-        print(self.name + ' version ' + Version.version + ' running.')
+        print(self.name + ' version ' + self.version + ' running.')
         self.heartbeat_publisher = HeartbeatPublisher(self)
 
     # publish a classification message based on the input text
