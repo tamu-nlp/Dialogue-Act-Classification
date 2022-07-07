@@ -49,7 +49,7 @@ def main():
 
             for line in f:
                 # grab the timestamp for the trial start
-                if '"sub_type":"start"' in line:
+                if '"sub_type":"start"' in line or '"sub_type": "start"' in line:
                     initial_timestamp = json.loads(line)["msg"]["timestamp"]
 
                 # after grabbing initial timestamp,
@@ -91,21 +91,25 @@ def main():
         # convert dialog to pandas df
         df = pd.DataFrame(dialog)
 
-        # add colnames and empty col
-        # for manual transcript correction
-        df.columns = [
-            "message_id",
-            "participant",
-            "utt",
-            "start_timestamp",
-            "end_timestamp",
-        ]
-        df["corr_utt"] = ""
+        # ignore empty dataframes
+        if len(df) == 0:
+            warning(f"File {filepath} failed")
+        else:
+            # add colnames and empty col
+            # for manual transcript correction
+            df.columns = [
+                "message_id",
+                "participant",
+                "utt",
+                "start_timestamp",
+                "end_timestamp",
+            ]
+            df["corr_utt"] = ""
 
-        # save this csv
-        filename = filename.split(".")[0]
-        new_file_path = os.path.join(new_dir, filename + "_correctedTranscripts.csv")
-        df.to_csv(new_file_path, index=False)
+            # save this csv
+            filename = filename.split(".")[0]
+            new_file_path = os.path.join(new_dir, filename + "_correctedTranscripts.csv")
+            df.to_csv(new_file_path, index=False)
 
 
 if __name__ == "__main__":
