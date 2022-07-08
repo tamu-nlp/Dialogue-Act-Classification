@@ -45,22 +45,21 @@ def main():
         # Process the file
         with open(filepath) as f:
             initial_timestamp = None
-            dialog = []
+            dialogs = []
 
             for line in f:
+                message = json.loads(line)
                 # grab the timestamp for the trial start
-                if '"sub_type":"start"' in line or '"sub_type": "start"' in line:
-                    initial_timestamp = json.loads(line)["msg"]["timestamp"]
+                if message["topic"] == "trial" and message["msg"]["sub_type"] == "start":
+                    initial_timestamp = message["msg"]["timestamp"]
 
                 # after grabbing initial timestamp,
                 # find all transcribed utterances
                 if initial_timestamp is not None:
-                    message = json.loads(line)
                     # we want the asr transcriptioins
                     # with topic agent/asr/final
                     if (
-                        message["msg"]["sub_type"] == "asr:transcription"
-                        and message["topic"] == "agent/asr/final"
+                        message["topic"] == "agent/asr/final"
                     ):
                         data = message["data"]
 
@@ -84,12 +83,12 @@ def main():
                         participant_id = data["participant_id"]
 
                         # add these items to the dialog
-                        dialog.append(
+                        dialogs.append(
                             [msg_id, participant_id, text, relative_start, relative_end]
                         )
 
         # convert dialog to pandas df
-        df = pd.DataFrame(dialog)
+        df = pd.DataFrame(dialogs)
 
         # ignore empty dataframes
         if len(df) == 0:
