@@ -92,7 +92,7 @@ class MessageCounter:
                 self.increment_field('heartbeats')
 
             # published Version Info message
-            elif((topic == 'agent/uaz_tdac_agent/versioninfo') # VersionInfoMessage.topic
+            elif((topic == 'agent/dialog_act_classifier/versioninfo') # VersionInfoMessage.topic
             and(message_type == 'agent')
             and(sub_type == 'versioninfo')
             and(source == 'dialog_act_classifier')): # Message.source
