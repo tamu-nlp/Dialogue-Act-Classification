@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import traceback
+#import Message
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
@@ -19,7 +20,7 @@ class MessageCounter:
     def __init__(self):
         self.counts = {'asr':0, 
             'chat': 0,
-            'dialog': 0,
+            'tdac': 0,
             'heartbeats': 0,
             'num_lines': 0,
             'num_messages': 0,
@@ -76,32 +77,32 @@ class MessageCounter:
             and(sub_type == 'asr:transcription')):
                 self.increment_field('asr')
 
-            # published Dialog Agent message
-            elif((topic == 'agent/dialog')
-            and(message_type == 'event')
-            and(sub_type == 'Event:dialogue_event')
-            and(source == 'uaz_dialog_agent')):
-                self.increment_field('dialog')
+            # published TDAC Agent message
+            elif((topic == 'agent/dialog_act_classifier') #TdacMessage.topic
+            and(message_type == 'agent') #TdacMessage.message_type
+            and(sub_type == 'dialog_act_label') #TdacMessage.sub_type
+            and(source == 'dialog_act_classifier')): # Message.source
+                self.increment_field('tdac')
 
             # published Heartbeat message
-            elif((topic == 'agent/uaz_dialog_agent/heartbeats')
+            elif((topic == 'agent/dialogue_act_classfier/heartbeat') # HeartbeatMessage.topic
             and(message_type == 'status')
             and(sub_type == 'heartbeat')
-            and(source == 'uaz_dialog_agent')):
+            and(source == 'dialog_act_classifier')): # Message.source
                 self.increment_field('heartbeats')
 
             # published Version Info message
-            elif((topic == 'agent/tomcat_textAnalyzer/versioninfo')
+            elif((topic == 'agent/uaz_tdac_agent/versioninfo') # VersionInfoMessage.topic
             and(message_type == 'agent')
             and(sub_type == 'versioninfo')
-            and(source == 'uaz_dialog_agent')):
+            and(source == 'dialog_act_classifier')): # Message.source
                 self.increment_field('version_info')
 
             # published Rollcall Response message
-            elif((topic == 'agent/control/rollcall/response')
+            elif((topic == 'agent/control/rollcall/response') # RollcallResponseMessage.topic
             and(message_type == 'agent')
             and(sub_type == 'rollcall:response')
-            and(source == 'uaz_dialog_agent')):
+            and(source == 'dialog_act_classifier')): # Message.source
                 self.increment_field('rollcall_response')
 
     # count a line of input which may be anything
@@ -124,7 +125,7 @@ class MessageCounter:
 #         data is extra data you've given to accompany the result.
 #         predicate is the test itself
 #
-def uaz_dialog_agent_test(name,lines,table:dict):
+def uaz_dialog_act_classifier_test(name,lines,table:dict):
 
     message_counter = MessageCounter()
 
@@ -137,7 +138,7 @@ def uaz_dialog_agent_test(name,lines,table:dict):
     # string representations of message counts
     asr = str(counts['asr'])
     chat = str(counts['chat'])
-    dialog = str(counts['dialog'])
+    tdac = str(counts['tdac'])
     heartbeats = str(counts['heartbeats'])
     version_info = str(counts['version_info'])
     rc_res = str(counts['rollcall_response'])
@@ -145,12 +146,12 @@ def uaz_dialog_agent_test(name,lines,table:dict):
     trial_start = str(counts['trial_start'])
     num_messages = str(counts['num_messages'])
 
-    # TEST 0:  The number of dialog messages must equal the number
+    # TEST 0:  The number of TDAC messages must equal the number
     #          of chat and final ASR messages
     test_id = f'{name}_0'
-    success = counts['dialog'] == (counts['asr'] + counts['chat'])
-    data = f'# dialog : {dialog}'
-    predicate = f'# dialog({dialog}) == chat({chat}) + final({asr})'
+    success = counts['tdac'] == (counts['asr'] + counts['chat'])
+    data = f'# tdac : {tdac}'
+    predicate = f'# tdac({tdac}) == chat({chat}) + final({asr})'
     table[test_id] = name, str(success), data, predicate
 
     # TEST 1:  The number of version_info messages must equal the number
@@ -192,7 +193,7 @@ def test_metadata_file(filename):
 
     input_file = open(filename, 'r', encoding='UTF-8') 
     lines = input_file.readlines()
-    uaz_dialog_agent_test('uaz_dialog_agent', lines, table)
+    uaz_dialog_act_classifier_test('uaz_dialog_act_classifier', lines, table)
 
     # Show the table using the same formatting as the Testbed
     print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format('AC/ASI',
