@@ -9,3 +9,14 @@ data/*
 
 # ignore generated results files
 results.csv
+
+# ignore metadata files
+*.metadata
+
+# ignore scratch files
+foo 
+foo.*
+bar 
+bar.*
+baz 
+baz.*

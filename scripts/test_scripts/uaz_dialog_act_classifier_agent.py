@@ -7,10 +7,13 @@ import traceback
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Validate the Testbed output of the UAZ Dialog Agent by counting the 
-# occurance of each message type.
+# Validate the output of the UAZ Dialog Act Classification agent by counting
+# the occurance of each message type.
+# 
+# A copy of this script is used by the Testbed at:
+# testbed/Tools/agent_testing/AgentPredicateTests/AgentTestFunctions/
+#
 
-# Keep track of the number of relevant messages
 class MessageCounter:
 
     # relevant message counts

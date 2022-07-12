@@ -57,6 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--nochat',
         action='store_true',
         help = 'Do not process Minecraft Chat messages.')
+
     args = parser.parse_args(sys.argv[1:])
 
     # start the application

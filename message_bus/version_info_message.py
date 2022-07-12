@@ -18,7 +18,7 @@ from version import Version
 
 class VersionInfoMessage (Message):
 
-    topic = 'agent/uaz_tdac_agent/versioninfo'
+    topic = 'agent/dialog_act_classifier/versioninfo'
     message_type = 'agent'
     sub_type = 'versioninfo'
 
@@ -30,7 +30,7 @@ class VersionInfoMessage (Message):
             'owner': 'University of Arizona',
             'source': [
                 'https://gitlab.asist.aptima.com:5050/asist/testbed/'
-                + 'uaz_tdac_agent:'
+                + 'uaz_dialog_act_classifier_agent:'
                 + Version.version
             ],
             'publishes': [
