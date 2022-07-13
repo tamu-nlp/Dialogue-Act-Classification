@@ -206,6 +206,8 @@ def test_metadata_file(filename):
         print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format(test_id, 
             k, success, data, predicate))
 
+    return table
+
 # If run as a script, test metadata files from the command line
 if __name__ == '__main__':
 
