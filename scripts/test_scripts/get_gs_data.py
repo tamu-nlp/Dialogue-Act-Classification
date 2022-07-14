@@ -55,7 +55,7 @@ def download_dataset(dataset_name):
     else:
         print(f'{dataset_name}: {n_filenames} data files found.')
 
-    # Download the files in the cloud dataset
+    # Download the files from the cloud dataset
     dataset_dir = f'./{dataset_name}'
     proc = subprocess.run(['gsutil', '-m', 'cp', gs_query, dataset_dir])
     if not proc.returncode == 0:
