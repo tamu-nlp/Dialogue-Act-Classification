@@ -29,7 +29,6 @@ class Config:
 
     # read config settings
     def read_config(self, file_d):
-        print('Config.read_config()')
         name = file_d.get('name', '')
         if(name == self.name_key):
             self.d = file_d

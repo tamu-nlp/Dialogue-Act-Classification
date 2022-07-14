@@ -18,7 +18,6 @@ if CUDA:
 
 
 def get_word_embeddings(sentence):
-    print(f'model.get_word_embeddings({sentence})')
     character_ids = batch_to_ids(sentence)
     if CUDA:
         character_ids = character_ids.cuda()
@@ -31,7 +30,6 @@ def get_word_embeddings(sentence):
 class BiLSTM(nn.Module):
 
     def __init__(self, config, is_pos=False):
-        print('model.BiLSTM.__init__')
         super(BiLSTM, self).__init__()
         self.bidirectional = config['bidirectional']
         self.num_layers = config['num_layers']
@@ -73,7 +71,6 @@ class BiLSTM(nn.Module):
 class SentenceEncoder(nn.Module):
 
     def __init__(self, config):
-        print('model.SentenceEncoder.__init__')
         super(SentenceEncoder, self).__init__()
         self.context_encoder = BiLSTM(config)
         self.inner_pred = nn.Linear((config['hidden_dim']*2), config['hidden_dim']*2) # Prafulla 3
@@ -106,7 +103,6 @@ class SentenceEncoder(nn.Module):
 class DiscourseEncoder(nn.Module):
 
     def __init__(self, config):
-        print('model.DiscourseEncoder.__init__')
         super(DiscourseEncoder, self).__init__()
         self.drop = nn.Dropout(config['dropout'])
         self.ws3 = nn.Linear((config['hidden_dim']*2), (config['hidden_dim']*2))
@@ -197,7 +193,6 @@ class DiscourseEncoder(nn.Module):
 class ParentTree(nn.Module):
 
     def __init__(self, config):
-        print('model.ParentTree.__init__')
         super(ParentTree, self).__init__()
         self.W1 = nn.Linear(config['hidden_dim']*2, config['hidden_dim']*2, bias=False)
         self.W2 = nn.Linear(config['hidden_dim']*2, config['hidden_dim']*2, bias=False)
@@ -258,7 +253,6 @@ class ParentTree(nn.Module):
 class DiscourseAct(nn.Module):
 
     def __init__(self, config):
-        print('model.DiscourseAct.__init__')
         super(DiscourseAct, self).__init__()
         self.pre_pred = nn.Linear((config['hidden_dim']*2*2), config['hidden_dim']*2)
         self.pred = nn.Linear((config['hidden_dim']*2), config['out_dim'])
@@ -290,7 +284,6 @@ class DiscourseAct(nn.Module):
 class Classifier(nn.Module):
 
     def __init__(self, config):
-        print('model.Classifier.__init__')
         super(Classifier, self).__init__()
         self.sentence_encoder = SentenceEncoder(config)
         self.discourse_encoder = DiscourseEncoder(config)

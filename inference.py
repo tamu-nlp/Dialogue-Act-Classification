@@ -28,7 +28,6 @@ out_tags = {'tc': 0, 'h': 1, 'nd': 2, 'qw': 3, 'df': 4, 't1': 5, 'na': 6, 'cs': 
 class Predictor:
 
     def __init__(self, model_path, history_len):
-        print('inference.Predictor.__init__')
         super(Predictor, self).__init__()
         self.has_cuda = torch.cuda.is_available()
         self.out_map = {out_tags[key]:labels_map[key] for key in out_tags}
@@ -45,7 +44,6 @@ class Predictor:
         self.last_speaker = '<None>'
 
     def predict(self, sentence):
-        print('inference.Predictor.predict')
         curr_spk, snt = sentence.strip().split(':')
 
 
@@ -63,6 +61,5 @@ class Predictor:
         return self.out_map[predict[-1].item()] #we are only interested in the label for last utterance, others only serve as context
 
     def reset_model(self):
-        print('inference.Predictor.reset_model')
         self.sent = ['<sos>' for _ in range(self.history_len)]
         self.last_speaker = '<None>'
