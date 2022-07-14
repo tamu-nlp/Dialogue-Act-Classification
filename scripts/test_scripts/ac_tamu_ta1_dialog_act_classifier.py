@@ -7,7 +7,7 @@ import traceback
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Validate the output of the UAZ Dialog Act Classification agent by counting
+# Validate the output of the TAMU Dialog Act Classification agent by counting
 # the occurance of each message type.
 # 
 # A copy of this script is used by the Testbed at:
@@ -128,7 +128,7 @@ class MessageCounter:
 #         data is extra data you've given to accompany the result.
 #         predicate is the test itself
 #
-def uaz_dialog_act_classifier_test(name,lines,table:dict):
+def ac_tamu_ta1_dialog_act_classifier_test(name,lines,table:dict):
 
     message_counter = MessageCounter()
 
@@ -196,7 +196,8 @@ def test_metadata_file(filename):
 
     input_file = open(filename, 'r', encoding='UTF-8') 
     lines = input_file.readlines()
-    uaz_dialog_act_classifier_test('uaz_dialog_act_classifier', lines, table)
+    ac_tamu_ta1_dialog_act_classifier_test(
+        'ac_tamu_ta1_dialog_act_classifier', lines, table)
 
     # Show the table using the same formatting as the Testbed
     print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format('AC/ASI',
