@@ -1,36 +1,85 @@
+#!/usr/bin/env python3
+
 import argparse
 import json
 import os
 import sys
 import traceback
-#import Message
 
 # Authors:  Joseph Astier, Adarsh Pyarelal
 #
-# Validate the output of the TAMU Dialog Act Classification agent by counting
-# the occurance of each message type.
-# 
-# A copy of this script is used by the Testbed at:
-# testbed/Tools/agent_testing/AgentPredicateTests/AgentTestFunctions/
-#
+# Validate the AC_UAZ_TA1_DialogAgent output by counting the 
+# occurance of each message type.
 
+# Keep track of the number of relevant messages
 class MessageCounter:
 
     # relevant message counts
     counts = {}
 
+    # subscribed messages [topic][header.message_type][msg.subtype]
+    subscriptions = {
+        'agent/control/rollcall/request': {
+            'agent': {
+                'rollcall:request': 'rollcall_request'
+            }
+        },
+        'minecraft/chat': {
+            'chat': {
+                'Event:Chat': 'chat'
+            }
+        },
+        'trial': {
+            'trial': {
+                'start': 'trial_start',
+                'stop': 'trial_stop'
+            }
+        },
+        'agent/asr/final': {
+            'observation': {
+                'asr:transcription': 'asr'
+            }
+        },
+    }
+
+    # published messages [msg.source][topic][header.message_type][msg.subtype]
+    publications = {
+        'AC_TAMU_TA1_DialogActClassifier': {
+            'agent/AC_TAMU_TA1_DialogActClassifier': {
+                'event': {
+                    'Event:dialogue_act_label': 'tdac'
+                }
+            },
+            'status/AC_TAMU_TA1_DialogActClassifier/heartbeats': {
+                'status': {
+                    'heartbeat': 'heartbeats'
+                }
+            },
+            'agent/AC_TAMU_TA1_DialogActClassifier/versioninfo': {
+                'agent': {
+                    'versioninfo': 'version_info'
+                }
+            },
+            'agent/control/rollcall/response': {
+                'agent': {
+                    'rollcall:response': 'rollcall_response'
+                }
+            }
+        }
+    }
+
     # reset for each instance of this class
     def __init__(self):
         self.counts = {'asr':0, 
             'chat': 0,
-            'tdac': 0,
+            'dialog': 0,
             'heartbeats': 0,
-            'num_lines': 0,
             'num_messages': 0,
             'rollcall_request': 0,
             'rollcall_response': 0,
             'trial_start': 0,
-            'version_info': 0}
+            'version_info': 0,
+            'other': 0}
 
     # Bump the count for the key
     def increment_field(self, key):
@@ -38,75 +87,18 @@ class MessageCounter:
         if(key in self.counts):
             value += self.counts[key]
         self.counts.update({key:value})
+        self.counts['num_messages'] = self.counts['num_messages']+1
 
-    # Record valid single-line JSON messages
     def count_message(self, message):
-        if (('topic' in message)
-        and('header' in message)
-        and('message_type' in message['header'])
-        and('msg' in message)
-        and('source' in message['msg'])
-        and('sub_type' in message['msg'])):
-            self.increment_field("num_messages")
+        topic = message.get('topic','other')
+        message_type = message.get('header',{}).get('message_type','other')
+        sub_type = message.get('msg',{}).get('sub_type', 'other')
+        source = message.get('msg',{}).get('source', 'other')
 
-            topic = message['topic']
-            message_type = message['header']['message_type']
-            sub_type = message['msg']['sub_type']
-            source = message['msg']['source']
+        d = self.publications.get(source,self.subscriptions)
+        field = d.get(topic,{}).get(message_type,{}).get(sub_type,'other')
+        self.increment_field(field)
 
-            # subscribed Trial message
-            if((topic == 'trial') 
-            and (message_type == 'trial')):
-                if(sub_type == 'start'):
-                    self.increment_field('trial_start')
-                elif(sub_type == 'stop'):
-                    self.increment_field('trial_stop')
-
-            # subscribed Rollcall Request messsage
-            elif((topic == 'agent/control/rollcall/request')
-            and(message_type == 'agent')
-            and(sub_type == 'rollcall:request')):
-                self.increment_field('rollcall_request')
-
-            # subscribed Chat messsage
-            elif((topic == 'minecraft/chat')
-            and(message_type == 'chat')
-            and(sub_type == 'Event:Chat')):
-                self.increment_field('chat')
-
-            # subscribed ASR messsage
-            elif((topic == 'agent/asr/final')
-            and(message_type == 'observation')
-            and(sub_type == 'asr:transcription')):
-                self.increment_field('asr')
-
-            # published TDAC Agent message
-            elif((topic == 'agent/dialog_act_classifier') #TdacMessage.topic
-            and(message_type == 'agent') #TdacMessage.message_type
-            and(sub_type == 'dialog_act_label') #TdacMessage.sub_type
-            and(source == 'dialog_act_classifier')): # Message.source
-                self.increment_field('tdac')
-
-            # published Heartbeat message
-            elif((topic == 'agent/dialogue_act_classfier/heartbeat') # HeartbeatMessage.topic
-            and(message_type == 'status')
-            and(sub_type == 'heartbeat')
-            and(source == 'dialog_act_classifier')): # Message.source
-                self.increment_field('heartbeats')
-
-            # published Version Info message
-            elif((topic == 'agent/dialog_act_classifier/versioninfo') # VersionInfoMessage.topic
-            and(message_type == 'agent')
-            and(sub_type == 'versioninfo')
-            and(source == 'dialog_act_classifier')): # Message.source
-                self.increment_field('version_info')
-
-            # published Rollcall Response message
-            elif((topic == 'agent/control/rollcall/response') # RollcallResponseMessage.topic
-            and(message_type == 'agent')
-            and(sub_type == 'rollcall:response')
-            and(source == 'dialog_act_classifier')): # Message.source
-                self.increment_field('rollcall_response')
 
     # count a line of input which may be anything
     def count_line(self, line):
@@ -124,11 +116,11 @@ class MessageCounter:
 #     key is the id of the test.
 #     value is a tuple of [name, success, data, predicate] where:
 #         name is the agent name. 
-#         success is a boolean. 
+#         success is True if the test passed
 #         data is extra data you've given to accompany the result.
-#         predicate is the test itself
+#         predicate is a description of the test
 #
-def ac_tamu_ta1_dialog_act_classifier_test(name,lines,table:dict):
+def ac_uaz_ta1_dialog_agent_test(name,lines,table:dict):
 
     message_counter = MessageCounter()
 
@@ -141,7 +133,7 @@ def ac_tamu_ta1_dialog_act_classifier_test(name,lines,table:dict):
     # string representations of message counts
     asr = str(counts['asr'])
     chat = str(counts['chat'])
-    tdac = str(counts['tdac'])
+    dialog = str(counts['dialog'])
     heartbeats = str(counts['heartbeats'])
     version_info = str(counts['version_info'])
     rc_res = str(counts['rollcall_response'])
@@ -149,12 +141,12 @@ def ac_tamu_ta1_dialog_act_classifier_test(name,lines,table:dict):
     trial_start = str(counts['trial_start'])
     num_messages = str(counts['num_messages'])
 
-    # TEST 0:  The number of TDAC messages must equal the number
+    # TEST 0:  The number of dialog messages must equal the number
     #          of chat and final ASR messages
     test_id = f'{name}_0'
-    success = counts['tdac'] == (counts['asr'] + counts['chat'])
-    data = f'# tdac : {tdac}'
-    predicate = f'# tdac({tdac}) == chat({chat}) + final({asr})'
+    success = counts['dialog'] == (counts['asr'] + counts['chat'])
+    data = f'# dialog : {dialog}'
+    predicate = f'# dialog({dialog}) == chat({chat}) + final({asr})'
     table[test_id] = name, str(success), data, predicate
 
     # TEST 1:  The number of version_info messages must equal the number
@@ -196,8 +188,7 @@ def test_metadata_file(filename):
 
     input_file = open(filename, 'r', encoding='UTF-8') 
     lines = input_file.readlines()
-    ac_tamu_ta1_dialog_act_classifier_test(
-        'ac_tamu_ta1_dialog_act_classifier', lines, table)
+    ac_uaz_ta1_dialog_agent_test('ac_uaz_ta1_dialog_agent', lines, table)
 
     # Show the table using the same formatting as the Testbed
     print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format('AC/ASI',
@@ -206,8 +197,6 @@ def test_metadata_file(filename):
         test_id, success, data, predicate = v
         print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format(test_id, 
             k, success, data, predicate))
-
-    return table
 
 # If run as a script, test metadata files from the command line
 if __name__ == '__main__':
