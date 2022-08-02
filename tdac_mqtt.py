@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 from typing import Optional, Dict, List
 from dataclasses import dataclass
@@ -13,7 +15,7 @@ sys.path.append('message_bus')
 from message_bus import MessageBus
 
 # Get model path
-MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
+MODEL_PATH = os.path.dirname(__file__) + "/data/sequential_baseline.pt"
 
 # Create the TDAC instance
 class Tdac:

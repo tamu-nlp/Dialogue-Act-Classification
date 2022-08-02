@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 from typing import Optional, Dict, List
 from dataclasses import dataclass
@@ -13,13 +15,12 @@ sys.path.append('message_bus')
 from message_bus import MessageBus
 
 # Get model path
-MODEL_PATH = os.path.dirname(__file__) + "./data/sequential_baseline.pt"
+MODEL_PATH = os.path.dirname(__file__) + "/data/sequential_baseline.pt"
 
 # Create the TDAC instance
 class Tdac:
 
     def __init__(self, args):
-
         # Create predictor object
         self.predictor = Predictor(model_path=MODEL_PATH, history_len=7)
 
@@ -80,7 +81,7 @@ if __name__ == '__main__':
     # Exit the loop if the user hits enter twice in a row
     while not empty_inputs == 2:
 
-        text = input('Enter text: ')
+        text = input('> ')
 
         if text == '':
             empty_inputs += 1
@@ -97,7 +98,7 @@ if __name__ == '__main__':
                     f.write(f'Text: {text}\n')
                     f.write(f'Classification: {classification}\n\n')
 
-    print('Done.')
+    print('Exiting program.')
     if(args.output):
         with open(args.output, "a") as f:
-            f.write('Done.')
+            f.write('Exiting program.')
