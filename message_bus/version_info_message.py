@@ -18,7 +18,7 @@ from version import Version
 
 class VersionInfoMessage (Message):
 
-    topic = 'agent/dialog_act_classifier/versioninfo'
+    topic = 'agent/AC_TAMU_TA1_DialogActClassifier/versioninfo'
     message_type = 'agent'
     sub_type = 'versioninfo'
 
@@ -33,6 +33,8 @@ class VersionInfoMessage (Message):
                 + 'uaz_dialog_act_classifier_agent:'
                 + Version.version
             ],
+            'config':[],
+            'dependencies':[],
             'publishes': [
                 {
                     'topic': self.topic,

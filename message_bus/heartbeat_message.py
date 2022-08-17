@@ -9,7 +9,7 @@ from message import Message
 #
 
 class HeartbeatMessage(Message):
-    topic = 'agent/dialog_act_classfier/heartbeat'
+    topic = 'status/dialog_act_classfier/heartbeat'
     message_type = 'status'
     sub_type = 'heartbeat'
 

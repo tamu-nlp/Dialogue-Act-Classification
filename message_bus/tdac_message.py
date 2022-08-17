@@ -8,7 +8,7 @@ from message import Message
 #
 
 class TdacMessage(Message):
-    topic = 'agent/dialog_act_classifier'
+    topic = 'agent/AC_TAMU_TA1_DialogActClassifier'
     message_type = 'agent'
     sub_type = 'dialog_act_label'
 

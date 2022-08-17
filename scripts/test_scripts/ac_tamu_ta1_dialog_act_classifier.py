@@ -42,27 +42,33 @@ class MessageCounter:
         },
     }
 
-    # published messages [msg.source][topic][header.message_type][msg.subtype]
+    # published messages [topic][header.message_type][msg.subtype][msg.source].field
     publications = {
-        'AC_TAMU_TA1_DialogActClassifier': {
-            'agent/AC_TAMU_TA1_DialogActClassifier': {
-                'event': {
-                    'Event:dialogue_act_label': 'tdac'
+        'agent/AC_TAMU_TA1_DialogActClassifier': {
+            'agent': {  
+                'dialogue_act_label': {
+                    'AC_TAMU_TA1_DialogActClassifier': 'tdac'
                 }
-            },
-            'status/AC_TAMU_TA1_DialogActClassifier/heartbeats': {
-                'status': {
-                    'heartbeat': 'heartbeats'
+            }
+        },
+        'status/AC_TAMU_TA1_DialogActClassifier/heartbeats': {
+            'status': {
+                'heartbeat': {
+                    'AC_TAMU_TA1_DialogActClassifier': 'heartbeats'
                 }
-            },
-            'agent/AC_TAMU_TA1_DialogActClassifier/versioninfo': {
-                'agent': {
-                    'versioninfo': 'version_info'
+            }
+        },
+        'agent/AC_TAMU_TA1_DialogActClassifier/versioninfo': {
+            'agent': {
+                'versioninfo': {
+                    'AC_TAMU_TA1_DialogActClassifier': 'version_info'
                 }
-            },
-            'agent/control/rollcall/response': {
-                'agent': {
-                    'rollcall:response': 'rollcall_response'
+            }
+        },
+        'agent/control/rollcall/response': {
+            'agent': {
+                'rollcall:response': {
+                    'AC_TAMU_TA1_DialogActClassifier': 'rollcall_response'
                 }
             }
         }
@@ -72,7 +78,7 @@ class MessageCounter:
     def __init__(self):
         self.counts = {'asr':0, 
             'chat': 0,
-            'dialog': 0,
+            'tdac': 0,
             'heartbeats': 0,
             'num_messages': 0,
             'rollcall_request': 0,
@@ -89,7 +95,17 @@ class MessageCounter:
         self.counts.update({key:value})
         self.counts['num_messages'] = self.counts['num_messages']+1
 
-    def count_message(self, message):
+    def count_published_message(self, message):
+        topic = message.get('topic','other')
+        message_type = message.get('header',{}).get('message_type','other')
+        sub_type = message.get('msg',{}).get('sub_type', 'other')
+        source = message.get('msg',{}).get('source', 'other')
+
+        d = self.publications.get(source,self.subscriptions)
+        field = d.get(topic,{}).get(message_type,{}).get(sub_type,'other')
+        self.increment_field(field)
+
+    def count_subscribed_message(self, message):
         topic = message.get('topic','other')
         message_type = message.get('header',{}).get('message_type','other')
         sub_type = message.get('msg',{}).get('sub_type', 'other')
@@ -120,7 +136,7 @@ class MessageCounter:
 #         data is extra data you've given to accompany the result.
 #         predicate is a description of the test
 #
-def ac_uaz_ta1_dialog_agent_test(name,lines,table:dict):
+def ac_tamu_ta1_dialog_act_classifier_test(name,lines,table:dict):
 
     message_counter = MessageCounter()
 
@@ -133,7 +149,7 @@ def ac_uaz_ta1_dialog_agent_test(name,lines,table:dict):
     # string representations of message counts
     asr = str(counts['asr'])
     chat = str(counts['chat'])
-    dialog = str(counts['dialog'])
+    tdac = str(counts['tdac'])
     heartbeats = str(counts['heartbeats'])
     version_info = str(counts['version_info'])
     rc_res = str(counts['rollcall_response'])
@@ -144,9 +160,9 @@ def ac_uaz_ta1_dialog_agent_test(name,lines,table:dict):
     # TEST 0:  The number of dialog messages must equal the number
     #          of chat and final ASR messages
     test_id = f'{name}_0'
-    success = counts['dialog'] == (counts['asr'] + counts['chat'])
-    data = f'# dialog : {dialog}'
-    predicate = f'# dialog({dialog}) == chat({chat}) + final({asr})'
+    success = counts['tdac'] == (counts['asr'] + counts['chat'])
+    data = f'# tdac : {tdac}'
+    predicate = f'# tdac({tdac}) == chat({chat}) + final({asr})'
     table[test_id] = name, str(success), data, predicate
 
     # TEST 1:  The number of version_info messages must equal the number
@@ -188,7 +204,11 @@ def test_metadata_file(filename):
 
     input_file = open(filename, 'r', encoding='UTF-8') 
     lines = input_file.readlines()
-    ac_uaz_ta1_dialog_agent_test('ac_uaz_ta1_dialog_agent', lines, table)
+    ac_tamu_ta1_dialog_act_classifier_test(
+        'ac_tamu_ta1_dialog_act_classifier',
+        lines,
+        table
+    )
 
     # Show the table using the same formatting as the Testbed
     print ("{:<28} {:<28} {:<10} {:<32} {:<30}".format('AC/ASI',

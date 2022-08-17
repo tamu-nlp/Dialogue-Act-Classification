@@ -9,7 +9,7 @@ import re
 
 class Message(ABC):
 
-    source = 'dialog_act_classifier'
+    source = 'AC_TAMU_TA1_DialogActClassifier'
 
     # extending classes override these
     topic = 'not_set'
