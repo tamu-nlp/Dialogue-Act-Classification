@@ -11,7 +11,7 @@ class Utterance(BaseModel):
     spk: str
     sent: str
 
-saved_model_file = "model/jointAP+DA_CLSRep_fientunedASIST_CS100_WS20_BS64_LR0.001_spkSwitch1_seed104.pt"
+saved_model_file = "ap_model_finetunedASIST.pt"
 predictor = Predictor(saved_model_file, 10)
 
 
