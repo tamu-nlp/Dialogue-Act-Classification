@@ -17,9 +17,11 @@ The repository is adapted to work in an online mode for ASIST data.
 * To run the api, uvicorn api:app --reload
 
 
+'''
 @article{joshi2019spanbert,
     title={{SpanBERT}: Improving Pre-training by Representing and Predicting Spans},
     author={Mandar Joshi and Danqi Chen and Yinhan Liu and Daniel S. Weld and Luke Zettlemoyer and Omer Levy},
     year={2019},
     journal={arXiv preprint arXiv:1907.10529}
 }
+'''
