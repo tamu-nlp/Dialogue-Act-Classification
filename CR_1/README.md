@@ -8,7 +8,7 @@ The repository is adapted to work in an online mode for ASIST data.
 ##Instructions to run the code - 
 * Create a python3 virtual environment (3.6.9)
 * Install python3 requirements: `pip3 install -r requirements_python3.txt`
-* A folder containing models, data and data converter scripts called 'data_dir' is required to be downloaded and placed in the same directory. data_dir folder can be downloaded from here: 
+* A folder containing models, data and data converter scripts called 'data_dir' is required to be downloaded and placed in the same directory. data_dir folder can be downloaded from here: https://drive.google.com/drive/folders/1wgcDdGmigp1_v2M1ztC-BEh8Xo8zU0wZ?usp=share_link
 * Prediction on ASIST data will require pasting the dialog in the process_data.py file.
 * Then 3 codes are needed to be run consecutively. Commands-
 * python3 process_data.py
